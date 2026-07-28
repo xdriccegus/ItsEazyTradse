@@ -1,0 +1,45 @@
+[build]
+  publish = "App"
+
+[functions]
+  directory = "netlify/functions"
+
+# Redirect /capitalproxy to Netlify Function
+[[redirects]]
+  from = "/capitalproxy"
+  to = "/.netlify/functions/capitalproxy"
+  status = 200
+
+[[redirects]]
+  from = "/proxy"
+  to = "/.netlify/functions/capitalproxy"
+  status = 200
+
+[[redirects]]
+  from = "/health"
+  to = "/.netlify/functions/health"
+  status = 200
+
+# SPA fallback - serve index.html for client-side routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Headers per sicurezza e performance
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"

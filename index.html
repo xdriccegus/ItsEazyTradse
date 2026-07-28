@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="description" content="EazyTrader - Il tuo assistente personale per il trading. Traccia trade, analizza performance e migliora le tue strategie.">
+    <meta name="keywords" content="trading, journal, forex, crypto, analisi, performance">
+    <meta name="author" content="EazyTrader">
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="EazyTrader">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="EazyTrader - Trading Journal">
+    <meta property="og:description" content="Traccia, analizza e migliora il tuo trading">
+    <meta property="og:type" content="website">
+    
+    <title>EazyTrader -  The Trading Journal</title>
+    <!-- Driver.js for Tours -->
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Dexie.js for IndexedDB -->
+    <script src="https://unpkg.com/dexie@3.2.4/dist/dexie.min.js"></script>
+    
+    <!-- P2P Sync Dependencies -->
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <!-- Firebase Cloud Sync -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+
+    <link rel="stylesheet" href="style_v1.css">
+</head>
+
+<body class="w-screen flex flex-col transition-colors duration-300 selection:bg-blue-500/30" style="min-height: 100vh;">
+
+    <div id="scroll-progress" class="fixed top-0 left-0 h-[2px] w-0 bg-gradient-to-r from-blue-500 to-indigo-500 z-[120] pointer-events-none"></div>
+
+    <div id="welcome-screen"
+        class="fixed inset-0 z-[100] flex flex-col items-center justify-start lg:justify-center overflow-y-auto bg-[var(--bg-body)] transition-all duration-700 px-4 py-6">
+        <div class="flex flex-col items-center gap-12 animate-[fade-in_1s_ease-out]">
+
+            <h1 class="text-4xl md:text-6xl font-bold tracking-tighter text-[var(--text-main)] text-center">
+                Benvenuto, <span id="welcome-name">trader</span>
+            </h1>
+
+            <button onclick="ui.startApp()"
+                class="group px-10 py-4 rounded-full border border-[var(--glass-border)] bg-[var(--glass-bg)] hover:bg-[var(--text-main)] hover:text-[var(--bg-body)] transition-all duration-500 backdrop-blur-md flex items-center gap-3">
+                <span class="text-sm font-bold tracking-widest uppercase">Inizia</span>
+                <i class="ph-bold ph-arrow-right group-hover:translate-x-1 transition-transform"></i>
+            </button>
+
+        </div>
+    </div>
+
+    <!-- Auto-save Indicator -->
+    <div id="autosave-indicator" class="fixed top-20 right-6 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs font-bold rounded-full shadow-2xl opacity-0 transition-all duration-300 z-50 flex items-center gap-2 pointer-events-none">
+        <i class="ph-fill ph-check-circle"></i>
+        <span>Salvato</span>
+    </div>
+
+    <header class="w-full flex items-center justify-center px-6 py-4 fixed top-0 left-0 right-0 z-40 pointer-events-none">
+        <div class="flex items-center gap-3">
+            <!-- Logo principale -->
+            <div class="glass px-5 py-2.5 rounded-full flex items-center gap-3 pointer-events-auto shadow-2xl border border-white/10 relative">
+                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 flex items-center justify-center shadow-xl shadow-blue-500/30 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
+                    <i class="ph-bold ph-chart-polar text-white text-base relative z-10"></i>
+                </div>
+                <h1 class="text-sm font-bold tracking-tight"><span class="logo-text-eazy">Eazy</span><span class="bg-gradient-to-r from-blue-500 to-indigo-500 bg-clip-text text-transparent">Trader</span></h1>
+                
+                <!-- Connettore magnetico -->
+                <div class="absolute -right-2 top-1/2 -translate-y-1/2 w-4 h-0.5 bg-gradient-to-r from-blue-500/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            </div>
+            
+            <!-- Connettore magnetico centrale -->
+            <div class="flex items-center gap-0.5 opacity-60">
+                <div class="w-1 h-1 rounded-full bg-blue-500 animate-pulse"></div>
+                <div class="w-1 h-1 rounded-full bg-blue-400 animate-pulse" style="animation-delay: 0.2s;"></div>
+                <div class="w-1 h-1 rounded-full bg-blue-300 animate-pulse" style="animation-delay: 0.4s;"></div>
+            </div>
+            
+            
+            <!-- Profile Widget -->
+            <div id="header-profile" onclick="router.navigate('profile')" class="glass px-2 md:px-3 py-2 rounded-full flex items-center gap-2 pointer-events-auto shadow-2xl border border-white/10 cursor-pointer hover:bg-white/5 transition-all hover:scale-105 active:scale-95 group relative">
+                <!-- Connettore magnetico -->
+                <div class="absolute -left-2 top-1/2 -translate-y-1/2 w-4 h-0.5 bg-gradient-to-l from-purple-500/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                
+                <!-- Populated via JS -->
+                <div class="w-8 h-8 rounded-full bg-white/10 animate-pulse"></div>
+            </div>
+            
+            <!-- Theme Toggle Button -->
+            <button id="theme-toggle" onclick="ui.toggleTheme()" class="glass w-10 h-10 rounded-full flex items-center justify-center pointer-events-auto shadow-2xl border border-white/10 hover:bg-white/5 transition-all hover:scale-105 active:scale-95 group relative" title="Cambia tema">
+                <i id="theme-icon" class="ph-bold ph-moon text-lg"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-1 overflow-y-scroll custom-scrollbar relative p-4 md:px-8 pt-20 pb-24 md:pb-36 max-w-[1600px] mx-auto w-full"
+        id="main-content">
+    </main>
+
+    <nav
+        class="hidden fixed bottom-8 w-full flex justify-center items-center gap-4 z-[100] pointer-events-none transition-all duration-700">
+
+        <div
+            class="dock-container pointer-events-auto glass flex items-center gap-2 p-2 rounded-3xl backdrop-blur-2xl overflow-x-auto custom-scrollbar max-w-[95vw] relative">
+            <button onclick="router.navigate('dashboard')" id="nav-dashboard"
+                class="dock-icon w-12 h-12 rounded-2xl flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-main)] shrink-0"
+                title="Dashboard" aria-label="Vai alla Dashboard">
+                <i class="ph-fill ph-squares-four text-2xl" aria-hidden="true"></i>
+            </button>
+            <button onclick="router.navigate('journal')" id="nav-journal"
+                class="dock-icon w-12 h-12 rounded-2xl flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-main)] shrink-0"
+                title="Journal" aria-label="Vai al Journal">
+                <i class="ph-fill ph-notebook text-2xl" aria-hidden="true"></i>
+            </button>
+            <button onclick="router.navigate('review')" id="nav-review"
+                class="dock-icon w-12 h-12 rounded-2xl flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-main)] shrink-0"
+                title="Revisione" aria-label="Vai alle Revisioni">
+                <i class="ph-fill ph-brain text-2xl" aria-hidden="true"></i>
+            </button>
+            <button onclick="router.navigate('todo')" id="nav-todo"
+                class="dock-icon w-12 h-12 rounded-2xl flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-main)] shrink-0"
+                title="To-Do" aria-label="Vai ai Task">
+                <i class="ph-fill ph-check-square text-2xl" aria-hidden="true"></i>
+            </button>
+
+            <button onclick="router.navigate('news')" id="nav-news"
+                class="dock-icon w-12 h-12 rounded-2xl flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-main)] shrink-0"
+                title="News" aria-label="Vai alle News">
+                <i class="ph-fill ph-newspaper text-2xl" aria-hidden="true"></i>
+            </button>
+            <button onclick="router.navigate('playbook')" id="nav-playbook"
+                class="dock-icon w-12 h-12 rounded-2xl flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-main)] shrink-0"
+                title="Playbook" aria-label="Vai al Playbook">
+                <i class="ph-fill ph-book-open-text text-2xl" aria-hidden="true"></i>
+            </button>
+
+            <!-- Divisore -->
+            <div class="h-6 border-l border-[var(--text-muted)]/60 shrink-0 mx-1"></div>
+
+            <button onclick="router.navigate('system')" id="nav-system"
+                class="dock-icon w-12 h-12 rounded-2xl flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-main)] shrink-0"
+                title="System" aria-label="Vai alle Impostazioni">
+                <i class="ph-fill ph-gear-six text-2xl" aria-hidden="true"></i>
+            </button>
+
+        </div>
+
+        <div class="relative pointer-events-auto">
+            <button id="draft-alert" onclick="router.navigate('drafts')"
+                class="dock-container glass w-12 h-12 rounded-2xl flex items-center justify-center text-yellow-500 shadow-2xl border-yellow-500/40 hidden hover:scale-110 transition-all relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-yellow-500/10 to-transparent"></div>
+                <i class="ph-fill ph-file-dashed text-2xl relative z-10"></i>
+                <div id="draft-badge"
+                    class="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-br from-red-500 to-red-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-lg border border-red-400/30">
+                    0</div>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Overlay transizione pagina -->
+    <div id="page-transition-overlay" class="fixed inset-0 bg-black/5 pointer-events-none opacity-0 transition-opacity duration-200 z-[90]"></div>
+
+    <div id="toast" role="status" aria-live="polite" aria-atomic="true"
+        class="fixed bottom-24 left-1/2 -translate-x-1/2 px-6 py-3 bg-gradient-to-r from-[var(--text-main)] to-gray-200 text-[var(--bg-body)] rounded-full font-bold text-sm shadow-2xl opacity-0 pointer-events-none transition-all duration-300 z-[100] border border-white/20">
+    </div>
+
+    <!-- Modular JavaScript Architecture -->
+    <script src="js/config.js"></script>
+    <script src="js/router.js"></script>
+    <script src="js/database.js"></script>
+    <script src="js/cloud-sync.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/mobile.js"></script>
+    <script src="js/pdf_export.js"></script>
+    <script src="js/premium.js"></script>
+
+    <script src="js/init.js"></script>
+</body>
+
+</html>

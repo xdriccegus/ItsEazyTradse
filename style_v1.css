@@ -1,0 +1,4187 @@
+/* THEME VARIABLES */
+:root {
+    /* Background Colors */
+    --bg-body: #000000;
+    --bg-card: #1c1c1e;
+    
+    /* Text Colors */
+    --text-main: #F5F5F7;
+    --text-muted: #86868B;
+    
+    /* Glass Morphism */
+    --glass-bg: rgba(28, 28, 30, 0.65);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    
+    /* Interactive Elements */
+    --card-hover: rgba(255, 255, 255, 0.08);
+    --input-bg: rgba(255, 255, 255, 0.08);
+    --input-focus: rgba(255, 255, 255, 0.12);
+    
+    /* Accent Colors */
+    --accent-blue: #0A84FF;
+    --accent-green: #30D158;
+    --accent-red: #FF453A;
+    --accent-orange: #FF9F0A;
+    --accent-purple: #BF5AF2;
+    --accent-yellow: #FFD60A;
+
+    /* Modal */
+    --modal-bg: #1c1c1e;
+    --modal-header: rgba(255, 255, 255, 0.03);
+
+    /* Toggle States */
+    --toggle-bg: #F5F5F7;
+    --toggle-text: #000000;
+
+    /* Mood Selection */
+    --mood-selected-bg: rgba(255, 255, 255, 0.2);
+    --mood-selected-border: transparent;
+
+    /* Kanban Columns */
+    --col-todo-bg: rgba(255, 59, 48, 0.05);
+    --col-prog-bg: rgba(10, 132, 255, 0.05);
+    --col-done-bg: rgba(48, 209, 88, 0.05);
+
+    /* Calendar */
+    --cal-hover: rgba(255, 255, 255, 0.1);
+    --cal-active: #0A84FF;
+
+    /* Tabs */
+    --tab-bg: rgba(118, 118, 128, 0.24);
+    --tab-active: #636366;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.15);
+    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="light"] {
+    /* Background Colors */
+    --bg-body: #FAFAFA;
+    --bg-card: #FFFFFF;
+    
+    /* Text Colors */
+    --text-main: #000000;
+    --text-muted: #666666;
+    
+    /* Glass Morphism */
+    --glass-bg: rgba(255, 255, 255, 0.9);
+    --glass-border: rgba(0, 0, 0, 0.12);
+    
+    /* Interactive Elements */
+    --card-hover: rgba(0, 0, 0, 0.06);
+    --input-bg: #F0F0F0;
+    --input-focus: #E8E8E8;
+    
+    /* Accent Colors */
+    --accent-blue: #007AFF;
+    --accent-green: #34C759;
+    --accent-red: #FF3B30;
+    --accent-orange: #FF9500;
+    --accent-purple: #AF52DE;
+    --accent-yellow: #FFCC00;
+
+    /* Modal */
+    --modal-bg: #FFFFFF;
+    --modal-header: #F5F5F7;
+
+    /* Toggle States */
+    --toggle-bg: #1D1D1F;
+    --toggle-text: #FFFFFF;
+
+    /* Mood Selection */
+    --mood-selected-bg: rgba(0, 0, 0, 0.05);
+    --mood-selected-border: #0071E3;
+
+    /* Kanban Columns */
+    --col-todo-bg: rgba(255, 59, 48, 0.03);
+    --col-prog-bg: rgba(0, 113, 227, 0.03);
+    --col-done-bg: rgba(52, 199, 89, 0.03);
+
+    /* Calendar */
+    --cal-hover: rgba(0, 0, 0, 0.05);
+    --cal-active: #0071E3;
+
+    /* Tabs */
+    --tab-bg: rgba(0, 0, 0, 0.08);
+    --tab-active: #FFFFFF;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.12), 0 8px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* Fix text-white in light mode */
+.preserve-white {
+    color: #ffffff !important;
+}
+
+[data-theme="light"] .text-white:not(.preserve-white) {
+    color: var(--text-main) !important;
+}
+
+/* OVERRIDE FOR MISUSED PRESERVE-WHITE: Force variable texts to be dark in light mode unless they sit on explicitly dark/colored backgrounds */
+[data-theme="light"] .preserve-white {
+    color: var(--text-main) !important;
+}
+
+/* Re-apply white color ONLY when the element itself, or its parent, is a primary colored background */
+[data-theme="light"] .bg-\[var\(--accent-blue\)\].preserve-white,
+[data-theme="light"] .bg-\[var\(--accent-blue\)\] .preserve-white,
+[data-theme="light"] button.bg-\[var\(--accent-blue\)\].preserve-white,
+[data-theme="light"] button.bg-\[var\(--accent-blue\)\] .preserve-white,
+[data-theme="light"] .bg-blue-500.preserve-white,
+[data-theme="light"] .bg-blue-500 .preserve-white,
+[data-theme="light"] .bg-blue-600.preserve-white,
+[data-theme="light"] .bg-blue-600 .preserve-white,
+[data-theme="light"] .bg-green-500.preserve-white,
+[data-theme="light"] .bg-green-500 .preserve-white,
+[data-theme="light"] .bg-green-600.preserve-white,
+[data-theme="light"] .bg-green-600 .preserve-white,
+[data-theme="light"] .bg-red-500.preserve-white,
+[data-theme="light"] .bg-red-500 .preserve-white,
+[data-theme="light"] .bg-red-600.preserve-white,
+[data-theme="light"] .bg-red-600 .preserve-white,
+[data-theme="light"] .bg-purple-500.preserve-white,
+[data-theme="light"] .bg-purple-500 .preserve-white,
+[data-theme="light"] .bg-purple-600.preserve-white,
+[data-theme="light"] .bg-purple-600 .preserve-white,
+[data-theme="light"] .bg-orange-500.preserve-white,
+[data-theme="light"] .bg-orange-500 .preserve-white,
+[data-theme="light"] .bg-yellow-500.preserve-white,
+[data-theme="light"] .bg-yellow-500 .preserve-white,
+[data-theme="light"] .bg-yellow-600.preserve-white,
+[data-theme="light"] .bg-yellow-600 .preserve-white,
+[data-theme="light"] .bg-emerald-500.preserve-white,
+[data-theme="light"] .bg-emerald-500 .preserve-white,
+[data-theme="light"] .bg-indigo-500.preserve-white,
+[data-theme="light"] .bg-indigo-500 .preserve-white,
+[data-theme="light"] .bg-gradient-to-r.preserve-white,
+[data-theme="light"] .bg-gradient-to-r .preserve-white,
+[data-theme="light"] .bg-gradient-to-br.preserve-white,
+[data-theme="light"] .bg-gradient-to-br .preserve-white,
+[data-theme="light"] .bg-gradient-to-t.preserve-white,
+[data-theme="light"] .bg-gradient-to-t .preserve-white {
+    color: #ffffff !important;
+}
+
+/* Fix group-hover in light mode */
+[data-theme="light"] .group:hover .group-hover\:text-\[var\(--accent-blue\)\] {
+    color: var(--accent-blue) !important;
+}
+
+/* Exception: Keep white text on colored buttons */
+[data-theme="light"] .bg-\[var\(--accent-blue\)\] .text-white,
+[data-theme="light"] .bg-green-500 .text-white,
+[data-theme="light"] .bg-green-600 .text-white,
+[data-theme="light"] .bg-red-500 .text-white,
+[data-theme="light"] .bg-purple-500 .text-white,
+[data-theme="light"] button.bg-\[var\(--accent-blue\)\],
+[data-theme="light"] button.bg-green-500,
+[data-theme="light"] button.bg-red-500,
+[data-theme="light"] .from-green-500,
+[data-theme="light"] .from-green-600 {
+    color: white !important;
+}
+
+/* Fix icons on colored backgrounds */
+[data-theme="light"] .bg-gradient-to-r .text-white,
+[data-theme="light"] .bg-gradient-to-br .text-white,
+[data-theme="light"] .bg-gradient-to-t .text-white,
+[data-theme="light"] .bg-blue-500 .text-white,
+[data-theme="light"] .bg-emerald-500 .text-white,
+[data-theme="light"] .bg-orange-500 .text-white,
+[data-theme="light"] .bg-indigo-500 .text-white {
+    color: white !important;
+}
+
+/* === ONBOARDING LIGHT MODE FIXES === */
+
+/* Hero card: swap dark gradient for a soft light gradient */
+[data-theme="light"] .onboarding-hero {
+    background: linear-gradient(135deg, rgba(240, 247, 255, 0.95), rgba(235, 243, 255, 0.9), rgba(230, 240, 255, 0.85)) !important;
+    border-color: var(--glass-border) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* Decorative blobs: softer in light mode */
+[data-theme="light"] .onboarding-hero .bg-cyan-500\/20 {
+    background-color: rgba(6, 182, 212, 0.08) !important;
+}
+[data-theme="light"] .onboarding-hero .bg-indigo-500\/20 {
+    background-color: rgba(99, 102, 241, 0.08) !important;
+}
+
+/* Badge: darker text for readability */
+[data-theme="light"] .onboarding-badge {
+    color: #0e7490 !important;
+    border-color: rgba(6, 182, 212, 0.3) !important;
+    background-color: rgba(6, 182, 212, 0.08) !important;
+}
+
+/* Hero title: dark text in light mode */
+[data-theme="light"] .onboarding-hero h1 {
+    color: #0f172a !important;
+}
+
+/* Subtitle: readable on light bg */
+[data-theme="light"] .onboarding-subtitle {
+    color: #475569 !important;
+}
+
+/* Feature cards in the hero */
+[data-theme="light"] .onboarding-feature-card {
+    background-color: rgba(255, 255, 255, 0.7) !important;
+    border-color: var(--glass-border) !important;
+}
+
+/* Completion card: lighter gradient */
+[data-theme="light"] .onboarding-complete-card {
+    background: linear-gradient(135deg, rgba(236, 253, 245, 0.7), rgba(240, 249, 255, 0.6), rgba(238, 242, 255, 0.7)) !important;
+    border-color: var(--glass-border) !important;
+}
+
+/* Completion badge: darker green text */
+[data-theme="light"] .onboarding-complete-badge {
+    color: #047857 !important;
+    border-color: rgba(16, 185, 129, 0.4) !important;
+    background-color: rgba(16, 185, 129, 0.08) !important;
+}
+
+/* Validation message: readable in light mode */
+[data-theme="light"] .border-rose-500\/40 {
+    border-color: rgba(244, 63, 94, 0.4) !important;
+}
+[data-theme="light"] .bg-rose-500\/10 {
+    background-color: rgba(244, 63, 94, 0.08) !important;
+}
+[data-theme="light"] .text-rose-200 {
+    color: #be123c !important;
+}
+
+/* Fix bg-black in light mode */
+[data-theme="light"] .bg-black\/30,
+[data-theme="light"] .bg-black\/40,
+[data-theme="light"] .bg-black\/60 {
+    background-color: rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Fix hardcoded dark backgrounds in light mode */
+[data-theme="light"] .bg-\[\#1c1c1e\] {
+    background-color: var(--bg-card) !important;
+}
+
+/* Fix select options in modals - light mode */
+[data-theme="light"] option {
+    background-color: var(--bg-card) !important;
+    color: var(--text-main) !important;
+}
+
+/* Fix borders in light mode */
+[data-theme="light"] .border-white\/5 {
+    border-color: #E0E0E0 !important;
+}
+
+[data-theme="light"] .border-white\/10 {
+    border-color: #D0D0D0 !important;
+}
+
+[data-theme="light"] .border-white\/20 {
+    border-color: #C0C0C0 !important;
+}
+
+[data-theme="light"] .border-white\/30 {
+    border-color: #B0B0B0 !important;
+}
+
+/* Fix bg-white in light mode hover states */
+[data-theme="light"] .hover\:bg-white\/5:hover {
+    background-color: #F0F0F0 !important;
+}
+
+[data-theme="light"] .hover\:bg-white\/10:hover {
+    background-color: #E8E8E8 !important;
+}
+
+[data-theme="light"] .hover\:bg-white\/15:hover {
+    background-color: #E0E0E0 !important;
+}
+
+[data-theme="light"] .hover\:bg-white\/20:hover {
+    background-color: #D8D8D8 !important;
+}
+
+/* Fix hover border states in light mode */
+[data-theme="light"] .hover\:border-white\/10:hover {
+    border-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+[data-theme="light"] .hover\:border-white\/20:hover {
+    border-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+[data-theme="light"] .hover\:text-white:hover {
+    color: var(--text-main) !important;
+}
+
+/* Fix placeholders in light mode */
+[data-theme="light"] input::placeholder,
+[data-theme="light"] textarea::placeholder {
+    color: var(--text-muted) !important;
+    opacity: 0.6;
+}
+
+/* Todo modal light mode fixes */
+[data-theme="light"] #modal-todo .bg-black\/20,
+[data-theme="light"] #modal-edit-todo .bg-black\/20 {
+    background-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Stable todo modal states (avoid fragile dynamic utility classes) */
+#modal-todo .todo-mode-tab {
+    color: var(--text-muted) !important;
+    background: transparent !important;
+    border: 1px solid transparent;
+    position: relative;
+    overflow: hidden;
+    transition: color 0.22s ease, background-color 0.22s ease, border-color 0.22s ease, transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+#modal-todo .todo-mode-tab:hover {
+    color: var(--text-main) !important;
+}
+
+#modal-todo .todo-mode-tab.active {
+    background: var(--bg-card) !important;
+    color: var(--text-main) !important;
+    border-color: rgba(10, 132, 255, 0.35) !important;
+    box-shadow: 0 0 0 1px rgba(10, 132, 255, 0.18), var(--shadow-sm);
+    transform: translateY(-1px);
+}
+
+#modal-todo .todo-mode-tab.active::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.12) 45%, transparent 100%);
+    animation: todoTabShimmer 360ms ease;
+    pointer-events: none;
+}
+
+#modal-todo .todo-form-panel {
+    transform-origin: top center;
+    will-change: transform, opacity, filter;
+}
+
+#modal-todo .todo-form-enter {
+    animation: todoFormEnter 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+#modal-todo .todo-form-exit {
+    animation: todoFormExit 170ms cubic-bezier(0.4, 0, 1, 1);
+    pointer-events: none;
+}
+
+#modal-todo #todo-modal-title.todo-title-switch {
+    animation: todoTitleSwitch 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes todoFormEnter {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.99);
+        filter: blur(1.5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+@keyframes todoFormExit {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-6px) scale(0.99);
+        filter: blur(1px);
+    }
+}
+
+@keyframes todoTitleSwitch {
+    from {
+        opacity: 0.35;
+        transform: translateY(-3px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes todoTabShimmer {
+    from {
+        transform: translateX(-120%);
+        opacity: 0;
+    }
+    30% {
+        opacity: 1;
+    }
+    to {
+        transform: translateX(120%);
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #modal-todo .todo-mode-tab,
+    #modal-todo .todo-mode-tab.active,
+    #modal-todo .todo-form-enter,
+    #modal-todo .todo-form-exit,
+    #modal-todo #todo-modal-title.todo-title-switch {
+        animation: none !important;
+        transition: none !important;
+        transform: none !important;
+        filter: none !important;
+    }
+}
+
+#modal-todo .type-btn {
+    color: var(--text-muted) !important;
+    border-color: transparent !important;
+}
+
+#modal-todo .type-btn i {
+    color: currentColor;
+}
+
+#modal-todo .type-btn.active {
+    color: var(--text-main) !important;
+    background: var(--bg-card) !important;
+    border-color: rgba(10, 132, 255, 0.45) !important;
+    box-shadow: 0 0 0 1px rgba(10, 132, 255, 0.22);
+}
+
+#modal-todo .type-btn.active i {
+    color: var(--accent-blue);
+}
+
+#modal-edit-todo .edit-type-btn {
+    color: var(--text-muted) !important;
+}
+
+#modal-edit-todo .edit-type-btn.active {
+    color: var(--text-main) !important;
+    background: var(--bg-card) !important;
+    border-color: rgba(10, 132, 255, 0.45) !important;
+    box-shadow: 0 0 0 1px rgba(10, 132, 255, 0.22);
+}
+
+#modal-todo input,
+#modal-todo select,
+#modal-todo textarea,
+#modal-edit-todo input,
+#modal-edit-todo select,
+#modal-edit-todo textarea {
+    color: var(--text-main) !important;
+}
+
+[data-theme="light"] #modal-todo input::placeholder,
+[data-theme="light"] #modal-todo select::placeholder,
+[data-theme="light"] #modal-edit-todo input::placeholder {
+    color: var(--text-muted) !important;
+    opacity: 0.7;
+}
+
+/* Enhanced tab contrast in light mode */
+[data-theme="light"] #modal-todo .bg-black\/20 {
+    background-color: rgba(0, 0, 0, 0.08) !important;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* Improve color contrast in light mode */
+[data-theme="light"] .text-green-400,
+[data-theme="light"] .text-green-500 {
+    color: #24a148 !important;
+}
+
+[data-theme="light"] .text-red-400,
+[data-theme="light"] .text-red-500 {
+    color: #d9342b !important;
+}
+
+[data-theme="light"] .text-blue-400,
+[data-theme="light"] .text-blue-500 {
+    color: #0066cc !important;
+}
+
+[data-theme="light"] .text-purple-400,
+[data-theme="light"] .text-purple-500 {
+    color: #9b45db !important;
+}
+
+[data-theme="light"] .text-orange-400,
+[data-theme="light"] .text-orange-500 {
+    color: #e67700 !important;
+}
+
+[data-theme="light"] .text-yellow-400,
+[data-theme="light"] .text-yellow-500 {
+    color: #cc9f00 !important;
+}
+
+[data-theme="light"] .text-emerald-400,
+[data-theme="light"] .text-emerald-500 {
+    color: #0f8a5f !important;
+}
+
+[data-theme="light"] .text-indigo-400,
+[data-theme="light"] .text-indigo-500 {
+    color: #3f51b5 !important;
+}
+
+/* Fix white/5, white/10 backgrounds in light mode */
+[data-theme="light"] .bg-white\/5 {
+    background-color: #F8F8F8 !important;
+}
+
+[data-theme="light"] .bg-white\/10 {
+    background-color: #F0F0F0 !important;
+}
+
+[data-theme="light"] .bg-white\/15 {
+    background-color: #ECECEC !important;
+}
+
+[data-theme="light"] .bg-white\/20 {
+    background-color: #E8E8E8 !important;
+}
+
+/* Fix backdrop blur overlay in light mode */
+[data-theme="light"] .bg-black\/60 {
+    background-color: rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme="light"] .backdrop-blur-md {
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+}
+
+/* Fix scanner container in light mode */
+[data-theme="light"] .bg-black {
+    background-color: #1c1c1e !important;
+}
+
+/* Fix account type selector - peer-checked states in light mode */
+[data-theme="light"] .peer:checked ~ div {
+    background-color: inherit !important;
+}
+
+[data-theme="light"] input[name="acc_type"][value="live"]:checked ~ div {
+    background-color: rgba(52, 199, 89, 0.2) !important;
+    border-color: rgba(52, 199, 89, 0.6) !important;
+}
+
+[data-theme="light"] input[name="acc_type"][value="funded"]:checked ~ div {
+    background-color: rgba(0, 113, 227, 0.2) !important;
+    border-color: rgba(0, 113, 227, 0.6) !important;
+}
+
+[data-theme="light"] input[name="acc_type"][value="challenge"]:checked ~ div {
+    background-color: rgba(255, 149, 0, 0.2) !important;
+    border-color: rgba(255, 149, 0, 0.6) !important;
+}
+
+/* Touch action and user select */
+body {
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* Light mode - Card gradienti premium */
+[data-theme="light"] .card-apple {
+    background: linear-gradient(135deg, #FFFFFF 0%, rgba(250, 250, 252, 0.98) 100%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06),
+                0 1px 3px rgba(0, 0, 0, 0.08),
+                inset 0 0.5px 0 rgba(255, 255, 255, 1);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .card-apple::before {
+    background: linear-gradient(90deg, transparent, rgba(0, 122, 255, 0.12), transparent);
+}
+
+[data-theme="light"] .card-apple:hover {
+    background: linear-gradient(135deg, #FFFFFF 0%, rgba(245, 248, 255, 1) 100%);
+    box-shadow: 0 8px 24px rgba(0, 122, 255, 0.15),
+                0 4px 12px rgba(0, 0, 0, 0.1),
+                0 0 0 1px rgba(0, 122, 255, 0.3),
+                inset 0 0.5px 0 rgba(255, 255, 255, 1);
+    transform: translateY(-2px);
+}
+
+/* Light mode - Modal premium */
+[data-theme="light"] .modal-clean {
+    background: linear-gradient(180deg, #FFFFFF 0%, rgba(252, 252, 254, 1) 100%);
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.15),
+                0 20px 40px rgba(0, 0, 0, 0.1),
+                0 0 0 1px rgba(0, 0, 0, 0.1),
+                inset 0 0.5px 0 rgba(255, 255, 255, 1);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* Light mode - Input gradienti */
+[data-theme="light"] input,
+[data-theme="light"] select,
+[data-theme="light"] textarea {
+    background: #F5F5F5;
+    border-color: #D0D0D0;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] input:focus,
+[data-theme="light"] select:focus,
+[data-theme="light"] textarea:focus {
+    background: #FFFFFF;
+    border-color: #007AFF;
+    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15),
+                0 2px 8px rgba(0, 122, 255, 0.1);
+}
+
+/* Light mode - Stat boxes premium */
+[data-theme="light"] .stat-box {
+    background: linear-gradient(135deg, #FFFFFF 0%, rgba(248, 248, 250, 1) 100%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04),
+                inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+[data-theme="light"] .stat-box::before {
+    background: linear-gradient(90deg, transparent, rgba(0, 113, 227, 0.2), transparent);
+}
+
+[data-theme="light"] .stat-box:hover {
+    box-shadow: 0 8px 20px rgba(0, 113, 227, 0.12),
+                0 4px 8px rgba(0, 0, 0, 0.06),
+                inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+/* Light mode - Dock premium */
+[data-theme="light"] .dock-container {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(245, 245, 247, 0.98) 100%);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08),
+                0 20px 40px rgba(0, 0, 0, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+[data-theme="light"] .dock-icon.active {
+    background: linear-gradient(135deg, rgba(0, 122, 255, 0.15) 0%, rgba(0, 122, 255, 0.08) 100%);
+    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3),
+                0 0 0 1px rgba(0, 122, 255, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    color: var(--accent-blue);
+}
+
+[data-theme="light"] .dock-icon:hover {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+/* Light mode - Glass effect premium */
+[data-theme="light"] .glass {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(30px) saturate(180%) brightness(1.1);
+    -webkit-backdrop-filter: blur(30px) saturate(180%) brightness(1.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+/* Light mode - Review cards premium */
+[data-theme="light"] .review-hero-card {
+    background: linear-gradient(135deg, #FFFFFF 0%, rgba(248, 248, 252, 1) 100%);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06),
+                inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+[data-theme="light"] .review-hero-card::before {
+    background: linear-gradient(90deg, transparent, rgba(0, 113, 227, 0.3), transparent);
+}
+
+[data-theme="light"] .review-hero-card:hover {
+    background: linear-gradient(135deg, #FFFFFF 0%, rgba(252, 252, 254, 1) 100%);
+    box-shadow: 0 16px 48px rgba(0, 113, 227, 0.2),
+                0 0 0 1px var(--accent-blue),
+                inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+/* Light mode - Todo columns premium */
+[data-theme="light"] .todo-col {
+    background: linear-gradient(135deg, #FFFFFF 0%, rgba(250, 250, 252, 1) 100%);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+/* Light mode - Calendar premium */
+[data-theme="light"] .calendar-day:hover {
+    background: linear-gradient(135deg, rgba(0, 113, 227, 0.08) 0%, rgba(0, 113, 227, 0.04) 100%);
+    box-shadow: 0 2px 8px rgba(0, 113, 227, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+[data-theme="light"] .calendar-day.today {
+    background: linear-gradient(135deg, var(--accent-blue) 0%, rgba(0, 113, 227, 0.9) 100%);
+    box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.2),
+                0 4px 12px rgba(0, 113, 227, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* Light mode - Kanban columns premium */
+[data-theme="light"] .kanban-col-todo {
+    background: linear-gradient(135deg, rgba(255, 59, 48, 0.04) 0%, rgba(255, 59, 48, 0.01) 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="light"] .kanban-col-prog {
+    background: linear-gradient(135deg, rgba(0, 113, 227, 0.04) 0%, rgba(0, 113, 227, 0.01) 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="light"] .kanban-col-done {
+    background: linear-gradient(135deg, rgba(52, 199, 89, 0.04) 0%, rgba(52, 199, 89, 0.01) 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* Logo text styling */
+.logo-text-eazy {
+    background: linear-gradient(to right, #FFFFFF, #C0C0C0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+[data-theme="light"] .logo-text-eazy {
+    background: linear-gradient(to right, #1a1a1a, #4a4a4a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Light mode - Review meta pills premium */
+[data-theme="light"] .review-meta-pill {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.02) 100%);
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* Light mode - Buttons premium */
+[data-theme="light"] button:not(:disabled):hover {
+    box-shadow: 0 6px 16px -4px rgba(0, 0, 0, 0.15),
+                0 0 0 1px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] button::after {
+    background: rgba(0, 113, 227, 0.3);
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    transition: background-color 0.2s ease, color 0.2s ease;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    touch-action: manipulation;
+    overscroll-behavior-y: none;
+    overflow-x: hidden;
+}
+
+/* Blocca scroll del body quando un modal è aperto (fix per iPad/mobile) */
+body.modal-open {
+    overflow: hidden !important;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+
+/* Safety net: while a popup is open, only modal overlay and its content remain interactive */
+body.app-modal-active > *:not([data-modal-allowed-root="1"]):not(script):not(style) {
+    pointer-events: none !important;
+}
+
+body.app-modal-active [data-modal-allowed-root="1"],
+body.app-modal-active [data-modal-allowed-root="1"] * {
+    pointer-events: auto !important;
+}
+
+/* Prevent iOS zoom on input focus - CRITICAL FOR IPAD */
+input,
+select,
+textarea {
+    font-size: 16px !important; /* Prevents auto-zoom on iOS */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+/* Better touch scrolling */
+* {
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Mobile Navigation - Compatta e Simmetrica */
+@media (max-width: 767px) {
+    nav {
+        bottom: 0 !important;
+        padding: 0.5rem !important;
+        padding-bottom: max(0.5rem, env(safe-area-inset-bottom)) !important;
+        background: transparent !important;
+    }
+    
+    .dock-container {
+        padding: 0.375rem !important;
+        gap: 0.375rem !important;
+    }
+    
+    .dock-icon {
+        width: 48px !important;
+        height: 48px !important;
+        border-radius: 12px !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    
+    .dock-icon i {
+        font-size: 24px !important;
+        transition: color 0.3s ease, transform 0.3s ease;
+    }
+    
+    /* Active state compatto */
+    .dock-icon.active {
+        background: var(--accent-blue) !important;
+        color: white !important;
+        transform: scale(1.03);
+        box-shadow: 0 4px 12px rgba(10, 132, 255, 0.25);
+    }
+    
+    /* Touch feedback ridotto */
+    .dock-icon:active {
+        transform: scale(0.94) !important;
+    }
+    
+    /* Draft badge compatto */
+    #draft-alert {
+        width: 48px !important;
+        height: 48px !important;
+    }
+    
+    #draft-badge {
+        width: 20px !important;
+        height: 20px !important;
+        font-size: 10px !important;
+        top: -3px !important;
+        right: -3px !important;
+    }
+    
+    /* Separatore più sottile */
+    .dock-container .w-px {
+        width: 1px !important;
+        height: 24px !important;
+        margin: 0 0.25rem !important;
+    }
+    
+    /* Ensure buttons are large enough */
+    button {
+        min-height: 44px !important;
+    }
+    
+    /* Prevent iOS zoom on input focus */
+    input,
+    select,
+    textarea {
+        font-size: 16px !important;
+    }
+}
+
+/* Global button animations */
+button {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    touch-action: manipulation;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* Fix specifico per iOS/iPad - garantisce che i button siano sempre cliccabili */
+button[onclick] {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -webkit-touch-callout: none;
+    touch-action: manipulation;
+    pointer-events: auto !important;
+    position: relative;
+    /* RIMOSSO z-index: 10 - causava stacking issues */
+}
+
+/* HITBOX FIX: translateY sposta il visuale ma NON l'hitbox → bottone parzialmente cliccabile.
+   Usiamo solo box-shadow per simulare il "lift" senza muovere l'elemento. */
+button:not(:disabled):hover {
+    box-shadow: 0 10px 24px -4px rgba(0, 0, 0, 0.35),
+                0 0 0 1px rgba(255, 255, 255, 0.05),
+                0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+button:not(:disabled):active {
+    transform: scale(0.97);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2),
+                0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+/* Custom Scrollbar - Migliorata per PC e Mobile */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px; /* Larghezza visibile per desktop */
+    height: 6px; /* Altezza per scroll orizzontale */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 99px;
+    transition: background 0.2s;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Nascondi scrollbar su mobile ma mantieni funzionalità */
+@media (hover: none) and (pointer: coarse) {
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 0px;
+        height: 0px;
+    }
+}
+
+.glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Apple Style Cards */
+.card-apple {
+    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(28, 28, 30, 0.95) 100%);
+    border-radius: 24px;
+    border: 1px solid var(--glass-border);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+    position: relative;
+    overflow: visible;
+}
+
+.card-apple::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.card-apple:hover::before {
+    opacity: 1;
+}
+
+.card-apple:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 60px -10px rgba(0, 0, 0, 0.5), 
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    z-index: 10;
+}
+
+.card-apple:active {
+    transform: translateY(-4px) scale(1.01);
+}
+
+@keyframes cardFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Modal Clean */
+.modal-clean {
+    background: linear-gradient(180deg, var(--modal-bg) 0%, rgba(28, 28, 30, 0.98) 100%);
+    border: 1px solid var(--glass-border);
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.6),
+                0 0 0 1px rgba(255, 255, 255, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    animation: modalZoomIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modalZoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Modal overlay animation */
+#modal-overlay {
+    animation: fadeInOverlay 0.3s ease-out;
+    /* Fix per scroll su iPad - permetti touch events */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+}
+
+/* Fix per tutti i modal - assicura scroll corretto */
+.modal-clean {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+}
+
+@keyframes fadeInOverlay {
+    from {
+        opacity: 0;
+        backdrop-filter: blur(0);
+    }
+    to {
+        opacity: 1;
+        backdrop-filter: blur(8px);
+    }
+}
+
+/* Mobile modal optimizations - Compatto */
+@media (max-width: 768px) {
+    #modal-overlay {
+        padding: 0 !important;
+    }
+    
+    /* Modal full-screen compatto */
+    #modal-overlay > div {
+        max-height: 100vh !important;
+        max-width: 100vw !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    #modal-account,
+    #modal-trade {
+        height: 100vh !important;
+        max-height: 100vh !important;
+        border-radius: 0 !important;
+        display: flex;
+        flex-direction: column;
+        padding: 1rem !important;
+    }
+
+    /* Header compatto */
+    #modal-account > div:first-child,
+    #modal-trade > div:first-child {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: var(--modal-bg);
+        border-bottom: 1px solid var(--glass-border);
+        padding: 0.75rem !important;
+        margin: -1rem -1rem 0.75rem -1rem;
+    }
+    
+    /* Drag indicator piccolo */
+    #modal-account::before,
+    #modal-trade::before {
+        content: '';
+        position: absolute;
+        top: 6px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 28px;
+        height: 3px;
+        background: var(--text-muted);
+        border-radius: 100px;
+        opacity: 0.3;
+        z-index: 20;
+    }
+
+    /* Modal content scroll */
+    #modal-account > div,
+    #modal-trade > div {
+        flex: 1;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+    }
+    
+    /* Bottoni compatti */
+    #modal-account button,
+    #modal-trade button {
+        min-height: 42px !important;
+        font-size: 15px !important;
+        padding: 0.625rem 1rem !important;
+    }
+    
+    /* Bottone chiudi compatto */
+    #modal-account button[onclick*="closeModals"],
+    #modal-trade button[onclick*="closeModals"] {
+        width: 36px !important;
+        height: 36px !important;
+        font-size: 20px !important;
+        padding: 0 !important;
+    }
+
+    /* Scroll margin ridotto */
+    #modal-account input:focus,
+    #modal-account textarea:focus,
+    #modal-account select:focus,
+    #modal-trade input:focus,
+    #modal-trade textarea:focus,
+    #modal-trade select:focus {
+        scroll-margin-bottom: 150px;
+    }
+    
+    /* Safe area minima */
+    #modal-account,
+    #modal-trade {
+        padding-top: max(1rem, env(safe-area-inset-top)) !important;
+        padding-bottom: max(1rem, env(safe-area-inset-bottom)) !important;
+    }
+    
+    /* Titoli modal più piccoli */
+    #modal-account h3,
+    #modal-trade h3 {
+        font-size: 1.25rem !important;
+    }
+}
+
+/* Mobile-friendly form inputs - Compatto */
+@media (max-width: 768px) {
+    /* Font-size minimo per evitare zoom iOS */
+    input,
+    select,
+    textarea,
+    button {
+        font-size: 16px !important;
+    }
+
+    /* Checkbox/radio compatti */
+    input[type="checkbox"],
+    input[type="radio"] {
+        width: 20px !important;
+        height: 20px !important;
+        cursor: pointer;
+    }
+    
+    /* Input compatti ma usabili */
+    input:not([type="checkbox"]):not([type="radio"]),
+    select,
+    textarea {
+        min-height: 44px !important;
+        padding: 0.625rem 0.875rem !important;
+        border-radius: 12px !important;
+        font-size: 16px !important;
+    }
+    
+    /* Date/time picker semplificato */
+    input[type="date"],
+    input[type="time"],
+    input[type="datetime-local"] {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background: var(--input-bg);
+        color: var(--text-main);
+        padding-right: 2rem;
+    }
+    
+    /* Textarea compatta */
+    textarea {
+        min-height: 80px !important;
+        resize: vertical;
+    }
+    
+    /* Select semplificato */
+    select {
+        padding-right: 2rem !important;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+    
+    /* Focus state sottile */
+    input:focus,
+    select:focus,
+    textarea:focus {
+        outline: none !important;
+        border: 1px solid var(--accent-blue) !important;
+        box-shadow: 0 0 0 2px rgba(10, 132, 255, 0.08) !important;
+    }
+
+    /* Label compatte */
+    label {
+        margin-bottom: 0.375rem;
+        display: block;
+        font-weight: 600;
+        font-size: 13px;
+    }
+
+    /* Dropdown più touch-friendly */
+    select {
+        padding: 0.75rem !important;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23F5F5F7' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        padding-right: 3rem !important;
+    }
+
+    /* Date inputs più grandi */
+    input[type="date"],
+    input[type="time"],
+    input[type="datetime-local"] {
+        padding: 0.875rem !important;
+        min-height: 48px;
+    }
+}
+
+/* Inputs */
+input,
+select,
+textarea {
+    background: linear-gradient(135deg, var(--input-bg) 0%, rgba(255, 255, 255, 0.05) 100%);
+    border: 1px solid var(--glass-border);
+    color: var(--text-main);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 14px;
+    will-change: transform;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    background: linear-gradient(135deg, var(--input-focus) 0%, rgba(255, 255, 255, 0.08) 100%);
+    border-color: var(--accent-blue);
+    transform: scale(1.01);
+    box-shadow: 0 0 0 4px rgba(10, 132, 255, 0.15),
+                0 8px 16px -4px rgba(10, 132, 255, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* High Contrast Radio/Toggle Logic */
+.status-radio:checked+div,
+.review-toggle-radio:checked+div,
+.tab-radio:checked+div {
+    background-color: var(--toggle-bg) !important;
+    color: var(--toggle-text) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    font-weight: 700;
+    transform: scale(1.02);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Account Select Buttons logic */
+.account-select-btn.active {
+    background-color: var(--toggle-bg);
+    color: var(--toggle-text);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Mood Button Selected State */
+.mood-btn {
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border: 2px solid transparent;
+}
+
+.mood-btn.selected {
+    transform: scale(1.2);
+    background-color: var(--mood-selected-bg);
+    border-color: var(--mood-selected-border);
+}
+
+/* Modern Stars */
+.star-rating i {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s ease;
+    cursor: pointer;
+}
+
+.star-rating i:hover {
+    transform: scale(1.3) rotate(15deg);
+    filter: drop-shadow(0 0 8px currentColor);
+}
+
+.star-rating i:active {
+    transform: scale(1.1);
+}
+
+/* Account Selector Button */
+.account-pill {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+    will-change: transform;
+}
+
+.account-pill.active {
+    background-color: var(--toggle-bg);
+    color: var(--toggle-text);
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    transform: scale(1.05);
+}
+
+.account-pill:not(.active):hover {
+    background-color: var(--input-bg);
+    color: var(--text-main);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Time Filter Pills */
+.time-filter-pill {
+    padding: 0.5rem 1rem;
+    border-radius: 0.875rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+    background-color: var(--input-bg);
+    color: var(--text-muted);
+    border: 1px solid transparent;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.time-filter-pill::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(10, 132, 255, 0.1), rgba(191, 90, 242, 0.1));
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+
+.time-filter-pill:hover:not(.active) {
+    background-color: var(--card-hover);
+    color: var(--text-main);
+    transform: translateY(-1px);
+    border-color: rgba(255, 255, 255, 0.05);
+}
+
+.time-filter-pill.active {
+    background: linear-gradient(135deg, var(--accent-blue), #0066d6);
+    color: white;
+    font-weight: 800;
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 16px rgba(10, 132, 255, 0.35), 0 2px 8px rgba(0, 0, 0, 0.15);
+    transform: scale(1.02);
+}
+
+.time-filter-pill.active::before {
+    opacity: 1;
+}
+
+/* NEW: Journal Tab Filters */
+.filter-tab-container {
+    background: var(--input-bg);
+    padding: 4px;
+    border-radius: 12px;
+    display: inline-flex;
+    gap: 2px;
+}
+
+.filter-tab {
+    padding: 6px 16px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.filter-tab:hover {
+    color: var(--text-main);
+}
+
+.filter-tab.active {
+    background-color: var(--toggle-bg);
+    color: var(--toggle-text);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* NEW: Icon Radio Buttons for ToDo */
+.icon-radio-label {
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+}
+
+.icon-radio:checked+div {
+    background-color: var(--toggle-bg);
+    color: var(--toggle-text);
+    border-color: var(--accent-blue);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Dock */
+nav {
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                opacity 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.dock-container {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1),
+                0 30px 60px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    background: linear-gradient(180deg, rgba(28, 28, 30, 0.85) 0%, rgba(20, 20, 20, 0.9) 100%);
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    max-width: 95vw;
+    overflow-x: auto;
+    justify-content: flex-start;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    animation: slideUpDock 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.dock-container::-webkit-scrollbar {
+    display: none;
+}
+
+.dock-icon {
+    transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1),
+                color 0.6s ease,
+                background 0.7s ease,
+                box-shadow 0.7s ease;
+    flex-shrink: 0;
+    will-change: transform, background, box-shadow;
+    position: relative;
+}
+
+.dock-icon.active {
+    color: var(--text-main);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+    box-shadow: 0 8px 24px rgba(10, 132, 255, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.dock-icon.active:hover {
+    transform: scale(1.05);
+}
+
+.dock-icon:not(.active):hover {
+    transform: scale(1.1);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes slideUpDock {
+    from {
+        transform: translateY(100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes glowPulse {
+    0%, 100% {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+}
+
+/* Payout Modal Button Active Style (NEW) */
+.payout-acc-btn {
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+}
+.payout-acc-btn.active {
+    background-color: var(--accent-blue) !important;
+    color: white !important;
+    border-color: var(--accent-blue);
+    box-shadow: 0 4px 10px rgba(10, 132, 255, 0.3);
+}
+
+/* =========================================
+   4. ANIMATIONS (Aggiornato per Splash Screen & Onboarding)
+   ========================================= */
+
+/* Fade In generico con movimento pi\u00f9 fluido */
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.fade-in {
+    animation: fade-in 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    will-change: opacity, transform;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Bounce animazione per il check finale */
+@keyframes bounce {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* Slide Up (per la Nav Bar quando si clicca Inizia) */
+@keyframes slide-up {
+    from {
+        transform: translate(-50%, 100%);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, 0);
+        opacity: 1;
+    }
+}
+
+/* Utility generica per nascondere elementi (usata da JS) */
+.hidden {
+    display: none !important;
+}
+
+/* List items animation */
+.space-y-2 > div,
+.space-y-3 > div,
+.space-y-4 > div {
+    animation: slideInFromLeft 0.4s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+}
+
+.space-y-2 > div:nth-child(1) { animation-delay: 0.05s; }
+.space-y-2 > div:nth-child(2) { animation-delay: 0.1s; }
+.space-y-2 > div:nth-child(3) { animation-delay: 0.15s; }
+.space-y-2 > div:nth-child(4) { animation-delay: 0.2s; }
+.space-y-2 > div:nth-child(5) { animation-delay: 0.25s; }
+.space-y-2 > div:nth-child(6) { animation-delay: 0.3s; }
+.space-y-2 > div:nth-child(7) { animation-delay: 0.35s; }
+.space-y-2 > div:nth-child(8) { animation-delay: 0.4s; }
+.space-y-2 > div:nth-child(9) { animation-delay: 0.45s; }
+.space-y-2 > div:nth-child(10) { animation-delay: 0.5s; }
+
+@keyframes slideInFromLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Trade card hover effects */
+.group.flex.items-center.justify-between {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+}
+
+.group.flex.items-center.justify-between:hover {
+    transform: translateX(4px);
+    box-shadow: -4px 0 0 0 var(--accent-blue), 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Review Page Specifics */
+.kanban-col {
+    border-radius: 28px;
+    padding: 20px;
+    padding-top: 24px;
+    /* FIX HOVER CLIPPING */
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 300px;
+    border: 1px solid var(--glass-border);
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.kanban-col::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    opacity: 0.6;
+}
+
+.kanban-col-todo {
+    background: linear-gradient(135deg, var(--col-todo-bg) 0%, rgba(255, 59, 48, 0.02) 100%);
+}
+
+.kanban-col-todo::before {
+    background: linear-gradient(90deg, transparent, var(--accent-red), transparent);
+}
+
+.kanban-col-prog {
+    background: linear-gradient(135deg, var(--col-prog-bg) 0%, rgba(10, 132, 255, 0.02) 100%);
+}
+
+.kanban-col-prog::before {
+    background: linear-gradient(90deg, transparent, var(--accent-blue), transparent);
+}
+
+.kanban-col-done {
+    background: linear-gradient(135deg, var(--col-done-bg) 0%, rgba(48, 209, 88, 0.02) 100%);
+}
+
+.kanban-col-done::before {
+    background: linear-gradient(90deg, transparent, var(--accent-green), transparent);
+}
+
+.review-hero-card {
+    background: var(--bg-card);
+    border-radius: 24px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.review-hero-card:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(10, 132, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+.review-quote {
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--text-main);
+    letter-spacing: -0.01em;
+}
+
+.review-meta-pill {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0 12px;
+    height: 28px;
+    border-radius: 8px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ToDo Column Styles */
+.todo-col {
+    min-height: 500px;
+    width: 280px;
+    min-width: 280px;
+    flex-shrink: 0;
+    border-radius: 28px;
+    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(28, 28, 30, 0.95) 100%);
+    border: 1px solid var(--glass-border);
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 20px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    /* Avoid cutoff at bottom */
+}
+
+/* Scroll container padding for shadows */
+.todo-scroll-container {
+    padding: 10px;
+}
+
+/* Stats Card (Journal) */
+.stat-box {
+    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(28, 28, 30, 0.9) 100%);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 20px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+    animation: statBoxFadeIn 0.5s ease-out backwards;
+    position: relative;
+    overflow: visible;
+}
+
+.stat-box:nth-child(1) { animation-delay: 0.1s; }
+.stat-box:nth-child(2) { animation-delay: 0.2s; }
+.stat-box:nth-child(3) { animation-delay: 0.3s; }
+.stat-box:nth-child(4) { animation-delay: 0.4s; }
+
+.stat-box:hover {
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes statBoxFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Calendar Styles */
+.calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    will-change: transform;
+}
+
+.calendar-day:hover {
+    background: linear-gradient(135deg, var(--cal-hover) 0%, rgba(255, 255, 255, 0.05) 100%);
+    transform: scale(1.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.calendar-day.today {
+    background: linear-gradient(135deg, var(--accent-blue) 0%, rgba(10, 132, 255, 0.8) 100%);
+    border: none;
+    box-shadow: 0 0 0 2px rgba(10, 132, 255, 0.3),
+                0 4px 16px rgba(10, 132, 255, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    animation: pulse 2s infinite;
+}
+
+.calendar-day.selected {
+    background-color: var(--accent-blue);
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(10, 132, 255, 0.4);
+}
+
+.cal-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    margin-top: 2px;
+    animation: dotPulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(10, 132, 255, 0.4); }
+    50% { box-shadow: 0 0 0 4px rgba(10, 132, 255, 0); }
+}
+
+@keyframes dotPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.2); opacity: 0.8; }
+}
+
+/* Language Toggle Buttons */
+.lang-btn {
+    min-width: 36px;
+    min-height: 28px;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+    color: var(--text-muted);
+    background: transparent;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.lang-btn.active {
+    color: white;
+    background: var(--accent-blue);
+    border-color: var(--accent-blue);
+}
+
+.lang-btn:hover:not(.active) {
+    color: var(--text-main);
+    background: var(--input-bg);
+}
+
+/* ============================================
+   MOBILE OPTIMIZATIONS - RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 768px) {
+
+    /* === GLOBAL MOBILE IMPROVEMENTS === */
+
+    /* Main content padding reduction */
+    #main-content {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+        padding-top: 5rem !important;
+        padding-bottom: 10rem !important;
+    }
+
+    /* Typography scaling */
+    h1 {
+        font-size: 2rem !important;
+    }
+
+    h2 {
+        font-size: 1.75rem !important;
+    }
+
+    h3 {
+        font-size: 1.25rem !important;
+    }
+
+    /* === HEADER === */
+    header {
+        padding-top: 0.75rem !important;
+        padding-bottom: 0.75rem !important;
+    }
+
+    header .glass {
+        padding: 0.5rem 0.75rem !important;
+    }
+
+    header h1 {
+        font-size: 0.875rem !important;
+    }
+
+    header .w-8.h-8 {
+        width: 1.75rem !important;
+        height: 1.75rem !important;
+    }
+
+    /* === BOTTOM NAVIGATION === */
+    .dock-icon {
+        transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+                    color 0.3s ease,
+                    background 0.4s ease,
+                    box-shadow 0.4s ease !important;
+    }
+    nav.fixed.bottom-8 {
+        bottom: 1rem !important;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+
+    .dock-container {
+        padding: 0.375rem !important;
+        gap: 0.25rem !important;
+    }
+
+    .dock-icon {
+        width: 2.75rem !important;
+        height: 2.75rem !important;
+    }
+
+    .dock-icon i {
+        font-size: 1.25rem !important;
+        transition: color 0.3s ease, transform 0.3s ease;
+    }
+
+    /* Draft button */
+    #draft-alert {
+        width: 2.75rem !important;
+        height: 2.75rem !important;
+    }
+
+    /* === MODALS === */
+    .modal-clean {
+        max-width: 100% !important;
+        margin: 0.5rem !important;
+        max-height: 95vh !important;
+    }
+
+    /* Modal Trade */
+    #modal-trade .px-6 {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+
+    #modal-trade .p-6,
+    #modal-trade .md\:p-8 {
+        padding: 1rem !important;
+    }
+
+    /* Stack form columns on mobile */
+    #trade-form.grid.md\:grid-cols-12 {
+        grid-template-columns: 1fr !important;
+    }
+
+    #trade-form .md\:col-span-8,
+    #trade-form .md\:col-span-4 {
+        grid-column: span 1 !important;
+    }
+
+    /* Make buttons full width on mobile */
+    #modal-trade .flex.justify-end {
+        flex-direction: column !important;
+    }
+
+    #modal-trade .flex.justify-end button {
+        width: 100% !important;
+    }
+
+    /* Modal Review */
+    #modal-review .p-8 {
+        padding: 1rem !important;
+    }
+
+    #modal-review .grid.md\:grid-cols-3 {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Modal Todo */
+    #modal-todo .grid.grid-cols-2 {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Modal Account */
+    #modal-account .grid.grid-cols-2 {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* === CARDS === */
+    .card-apple {
+        border-radius: 1rem !important;
+    }
+
+    .card-apple:hover {
+        transform: scale(1.01) !important;
+    }
+
+    /* === DASHBOARD === */
+
+    /* Header section compatto */
+    .flex.flex-col.md\:flex-row.justify-between.items-start.md\:items-end {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.5rem !important;
+    }
+
+    /* Stats grid compatto */
+    .grid.grid-cols-1.md\:grid-cols-4 {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.5rem !important;
+    }
+
+    /* Chart takes full width */
+    .grid.grid-cols-1.md\:grid-cols-4 .md\:col-span-3 {
+        grid-column: span 2 !important;
+    }
+
+    /* Calendar takes full width */
+    .grid.grid-cols-1.md\:grid-cols-4>div:last-child {
+        grid-column: span 2 !important;
+    }
+
+    /* Account pills compatti */
+    .account-pill {
+        font-size: 0.6875rem !important;
+        padding: 0.3125rem 0.625rem !important;
+    }
+
+    /* Migliora scroll orizzontale per contenuti larghi */
+    .overflow-x-auto {
+        scroll-snap-type: x proximity;
+        scroll-padding: 0 1rem;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* Firefox */
+    }
+
+    .overflow-x-auto::-webkit-scrollbar {
+        display: none; /* Chrome, Safari */
+    }
+
+    .overflow-x-auto > * {
+        scroll-snap-align: start;
+    }
+
+    /* Cards più compatte su mobile */
+    .card-apple {
+        border-radius: 12px !important;
+        padding: 0.75rem !important;
+    }
+
+    /* Riduce padding interno delle cards */
+    .card-apple .p-6,
+    .card-apple .p-8 {
+        padding: 0.75rem !important;
+    }
+    
+    /* Icone e testi cards più piccoli */
+    .card-apple h3 {
+        font-size: 0.9375rem !important;
+    }
+    
+    .card-apple p {
+        font-size: 0.6875rem !important;
+    }
+    
+    .card-apple .w-12.h-12 {
+        width: 40px !important;
+        height: 40px !important;
+    }
+    
+    .card-apple i {
+        font-size: 20px !important;
+    }
+
+    /* Migliora leggibilità testo piccolo */
+    .text-xs {
+        font-size: 0.75rem !important;
+        line-height: 1.125rem !important;
+    }
+
+    .text-sm {
+        font-size: 0.8125rem !important;
+        line-height: 1.25rem !important;
+    }
+
+    /* === JOURNAL === */
+
+    /* Stats boxes compatte */
+    .grid.grid-cols-2.md\:grid-cols-4 {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.5rem !important;
+    }
+
+    .stat-box {
+        padding: 0.625rem !important;
+    }
+    
+    .stat-box p:first-child {
+        font-size: 8px !important;
+        margin-bottom: 0.2rem !important;
+    }
+    
+    .stat-box p:last-child {
+        font-size: 1.125rem !important;
+    }
+
+    /* Filters stack vertically */
+    .flex.flex-wrap.gap-3 {
+        flex-direction: column !important;
+        width: 100% !important;
+    }
+
+    .flex.flex-wrap.gap-3 select,
+    .flex.flex-wrap.gap-3 button {
+        width: 100% !important;
+    }
+
+    /* Trade list items */
+    .group.flex.items-center.justify-between.p-4 {
+        padding: 0.75rem !important;
+    }
+
+    /* Always show edit/delete buttons on mobile (no hover) */
+    .group-hover\:opacity-100 {
+        opacity: 100 !important;
+    }
+
+    /* === REVIEW (KANBAN) === */
+
+    /* Kanban columns narrower and full-viewport width */
+    .kanban-col {
+        min-width: 85vw !important;
+        max-width: 85vw !important;
+        padding: 0.75rem !important;
+    }
+
+    /* Review cards compatte */
+    .review-hero-card {
+        padding: 0.75rem !important;
+    }
+
+    /* Toggle buttons compatti */
+    .flex.p-1.rounded-2xl button {
+        padding: 0.5rem 0.75rem !important;
+        font-size: 0.6875rem !important;
+    }
+
+    /* === TODO === */
+
+    /* Weekly goals compatti */
+    .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-3 {
+        grid-template-columns: 1fr !important;
+        gap: 0.5rem !important;
+    }
+
+    /* Todo columns compatte */
+    .todo-col {
+        min-width: 82vw !important;
+        width: 82vw !important;
+        padding: 0.625rem !important;
+    }
+
+    /* Todo scroll container compatto */
+    .todo-scroll-container {
+        padding: 0.375rem !important;
+    }
+
+    /* === NEWS === */
+
+    /* News grid - 1 column */
+    .grid.grid-cols-1.md\:grid-cols-3.lg\:grid-cols-4 {
+        grid-template-columns: 1fr !important;
+    }
+
+    .grid.grid-cols-1.md\:grid-cols-3.lg\:grid-cols-4 .md\:col-span-2,
+    .grid.grid-cols-1.md\:grid-cols-3.lg\:grid-cols-4 .lg\:col-span-2 {
+        grid-column: span 1 !important;
+    }
+
+    .grid.grid-cols-1.md\:grid-cols-3 {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* === ACCOUNTS === */
+
+    /* Account cards - 1 column */
+    .grid.grid-cols-1.md\:grid-cols-2 {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* === TOUCH TARGETS === */
+
+    /* Trade cards compatte e simmetriche */
+    [onclick*="showTradeDetail"] {
+        padding: 0.75rem !important;
+        margin-bottom: 0.5rem !important;
+        border-radius: 12px !important;
+        min-height: 64px;
+        touch-action: pan-y;
+    }
+    
+    /* Asset compatto */
+    [onclick*="showTradeDetail"] h4 {
+        font-size: 1rem !important;
+        font-weight: 700 !important;
+    }
+    
+    /* PnL compatto */
+    [onclick*="showTradeDetail"] .text-right p:first-child {
+        font-size: 1rem !important;
+        font-weight: 700 !important;
+    }
+    
+    /* Nascondo bottoni su mobile, usa long-press */
+    [onclick*="showTradeDetail"] .group-hover\:opacity-100 {
+        opacity: 0 !important;
+        display: none !important;
+    }
+    
+    /* Stat boxes simmetriche e compatte */
+    .stat-box {
+        padding: 0.625rem !important;
+        border-radius: 10px !important;
+    }
+    
+    .stat-box p:first-child {
+        font-size: 8px !important;
+        margin-bottom: 0.2rem !important;
+        letter-spacing: 0.03em;
+    }
+    
+    .stat-box p:last-child {
+        font-size: 1.125rem !important;
+        line-height: 1.2;
+    }
+    
+    /* Cards grid simmetrico */
+    .grid.grid-cols-2.md\:grid-cols-4 {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.5rem !important;
+    }
+    
+    /* === DASHBOARD MOBILE === */
+    
+    /* Chart containers compatti */
+    .grid.grid-cols-1.lg\:grid-cols-2 {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
+    }
+    
+    /* Chart canvas compatto */
+    canvas {
+        max-height: 240px !important;
+        width: 100% !important;
+        height: auto !important;
+    }
+    
+    /* Stats cards scroll compatto */
+    .grid.grid-cols-2.md\:grid-cols-4.gap-4 {
+        display: flex !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+        gap: 0.5rem !important;
+        padding-bottom: 0.375rem;
+    }
+    
+    .grid.grid-cols-2.md\:grid-cols-4.gap-4 > div {
+        min-width: 130px !important;
+        flex-shrink: 0;
+        scroll-snap-align: start;
+    }
+    
+    /* Cards compatte e simmetriche */
+    .card-apple {
+        padding: 0.75rem !important;
+        border-radius: 12px !important;
+    }
+    
+    .card-apple h3 {
+        font-size: 0.9375rem !important;
+        line-height: 1.25;
+    }
+    
+    .card-apple p {
+        font-size: 0.6875rem !important;
+        line-height: 1.2;
+    }
+    
+    /* Icone cards più piccole */
+    .card-apple .w-12.h-12 {
+        width: 40px !important;
+        height: 40px !important;
+    }
+    
+    .card-apple i {
+        font-size: 20px !important;
+    }
+    
+    /* Chart titles compatti */
+    .bg-\[var\(--bg-card\)\] h3 {
+        font-size: 0.9375rem !important;
+        padding: 0.75rem !important;
+    }
+
+    /* === CALENDAR === */
+
+    .calendar-day {
+        min-height: 40px;
+        font-size: 0.6875rem !important;
+        padding: 0.25rem !important;
+    }
+
+    /* === FORM INPUTS === */
+
+    /* Già definiti sopra - rimosso duplicato */
+
+    /* === TYPOGRAPHY - Compatta === */
+
+    /* Padding generale ridotto */
+    #main-content {
+        padding: 0.75rem !important;
+        padding-top: 5rem !important;
+        padding-bottom: 5rem !important;
+    }
+
+    /* Titoli più piccoli */
+    .text-4xl {
+        font-size: 1.625rem !important;
+        line-height: 2rem !important;
+    }
+
+    .text-3xl {
+        font-size: 1.375rem !important;
+        line-height: 1.75rem !important;
+    }
+
+    .text-2xl {
+        font-size: 1.125rem !important;
+        line-height: 1.5rem !important;
+    }
+    
+    .text-xl {
+        font-size: 1rem !important;
+        line-height: 1.375rem !important;
+    }
+    
+    .text-lg {
+        font-size: 0.9375rem !important;
+        line-height: 1.25rem !important;
+    }
+
+    .text-5xl {
+        font-size: 2rem !important;
+        line-height: 2.5rem !important;
+    }
+
+    /* === UTILITIES === */
+
+    /* Reduce gaps and spacing */
+    .gap-8 {
+        gap: 1rem !important;
+    }
+
+    .gap-6 {
+        gap: 0.75rem !important;
+    }
+
+    .gap-4 {
+        gap: 0.5rem !important;
+    }
+
+    /* Padding utilities */
+    .p-6 {
+        padding: 1rem !important;
+    }
+
+    .p-8 {
+        padding: 1rem !important;
+    }
+
+    /* === SPECIFIC FIXES === */
+
+    /* Day modal */
+    #day-modal-content {
+        max-height: 70vh !important;
+    }
+
+    /* Image gallery in trade modal */
+    #drop-zone {
+        aspect-ratio: 4/3 !important;
+    }
+
+    /* Toast notification */
+    #toast {
+        bottom: 6rem !important;
+        font-size: 0.75rem !important;
+        padding: 0.5rem 1rem !important;
+    }
+}
+
+/* Extra small devices (iPhone SE, etc.) */
+@media (max-width: 375px) {
+    #main-content {
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
+    }
+
+    .dock-icon {
+        width: 2.5rem !important;
+        height: 2.5rem !important;
+    }
+
+    .dock-icon i {
+        font-size: 1.125rem !important;
+    }
+
+    h2 {
+        font-size: 1.5rem !important;
+    }
+
+    .kanban-col,
+    .todo-col {
+        min-width: 90vw !important;
+        width: 90vw !important;
+    }
+
+    /* Even smaller text */
+    .text-4xl {
+        font-size: 1.5rem !important;
+    }
+
+    .text-3xl {
+        font-size: 1.25rem !important;
+    }
+}
+
+/* =========================================
+   TABLET & IPAD OPTIMIZATIONS (768px - 1024px)
+   ========================================= */
+
+/* Touch Targets - iOS Human Interface Guidelines */
+button,
+a[role="button"],
+.dock-icon,
+input[type="checkbox"],
+input[type="radio"] {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0.5rem;
+}
+
+/* Utility classes for responsive display */
+.hidden-mobile {
+    display: initial;
+}
+
+.hidden-tablet {
+    display: initial;
+}
+
+.hidden-desktop {
+    display: none;
+}
+
+@media (max-width: 767px) {
+    .hidden-mobile {
+        display: none !important;
+    }
+    .show-mobile {
+        display: initial !important;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    .hidden-tablet {
+        display: none !important;
+    }
+    .show-tablet {
+        display: initial !important;
+    }
+}
+
+@media (min-width: 1025px) {
+    .hidden-desktop {
+        display: none !important;
+    }
+    .show-desktop {
+        display: initial !important;
+    }
+}
+
+/* Tablet Portrait & Landscape (iPad specific) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    /* Grid adjustments */
+    .grid.grid-cols-1.md\:grid-cols-4 {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    .todo-col {
+        min-width: 280px !important;
+    }
+    
+    /* Larger touch targets for tablet */
+    button:not(.time-filter-pill):not(.account-pill) {
+        min-height: 48px !important;
+        padding-left: 1.25rem !important;
+        padding-right: 1.25rem !important;
+    }
+    
+    /* Make primary action buttons more prominent */
+    button.bg-\[var\(--accent-blue\)\],
+    button[onclick*="openNewTradeModal"],
+    button[onclick*="openModal"] {
+        min-height: 52px !important;
+        padding: 0.875rem 1.75rem !important;
+        font-size: 1rem !important;
+        border-radius: 1rem !important;
+    }
+    
+    /* Improve dock icons size for tablet */
+    .dock-icon {
+        width: 56px !important;
+        height: 56px !important;
+    }
+    
+    .dock-icon i {
+        font-size: 28px !important;
+    }
+    
+    /* Larger header profile widget on tablet */
+    #header-profile {
+        padding: 0.625rem 1rem !important;
+    }
+    
+    #header-profile .w-8.h-8 {
+        width: 2.5rem !important;
+        height: 2.5rem !important;
+    }
+    
+    /* Better spacing for nav items */
+    .dock-container {
+        gap: 0.75rem !important;
+        padding: 0.75rem !important;
+    }
+    
+    /* Modal optimization for tablet */
+    .modal-clean {
+        max-width: 90vw !important;
+        max-height: 85vh !important;
+    }
+    
+    /* Improve form inputs touch targets */
+    input,
+    select,
+    textarea {
+        min-height: 48px !important;
+        font-size: 16px !important; /* Prevents zoom on iOS */
+        padding: 0.875rem 1rem !important;
+    }
+    
+    /* Calendar widget sizing */
+    .calendar-day {
+        min-height: 44px !important;
+        min-width: 44px !important;
+        font-size: 0.9rem !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    /* Calendar month/year navigation */
+    #calendar-widget button {
+        min-width: 44px !important;
+        min-height: 44px !important;
+    }
+    
+    /* Todo items larger touch targets */
+    .todo-item,
+    [draggable="true"] {
+        min-height: 52px !important;
+        padding: 0.875rem 1rem !important;
+    }
+    
+    /* Account modal improvements */
+    #modal-account button,
+    #modal-account input,
+    #modal-account select {
+        min-height: 52px !important;
+        font-size: 16px !important;
+    }
+    
+    /* Radio/checkbox labels larger */
+    label:has(input[type="radio"]),
+    label:has(input[type="checkbox"]) {
+        min-height: 48px !important;
+        padding: 0.75rem !important;
+    }
+    
+    /* Settings page cards no hover */
+    .settings-no-hover {
+        transform: none !important;
+    }
+    
+    /* Select dropdowns better sized */
+    select {
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="%23666"><path d="M4 6l4 4 4-4z"/></svg>') !important;
+        background-repeat: no-repeat !important;
+        background-position: right 0.75rem center !important;
+        padding-right: 2.5rem !important;
+    }
+    
+    /* Time filter pills larger */
+    .time-filter-pill,
+    .account-pill {
+        min-height: 44px !important;
+        padding: 0.75rem 1.25rem !important;
+        font-size: 0.875rem !important;
+    }
+    
+    /* Stats scrolling improvements */
+    #stats-grid {
+        gap: 1rem !important;
+        padding: 0.75rem 0 !important;
+    }
+    
+    .stat-box {
+        min-width: 45% !important;
+        scroll-snap-align: start !important;
+        padding: 1.25rem !important;
+    }
+    
+    /* Card hover effects adjusted for tablet touch */
+    .card-apple:active {
+        transform: scale(0.98) !important;
+        transition: transform 0.1s ease !important;
+    }
+}
+
+/* iPad Portrait Specific (768px) */
+@media (width: 768px) and (orientation: portrait) {
+    /* Single column layouts */
+    .grid.grid-cols-1.lg\:grid-cols-2,
+    .grid.grid-cols-1.md\:grid-cols-2 {
+        grid-template-columns: 1fr !important;
+    }
+    
+    /* Larger text for better readability */
+    body {
+        font-size: 16px !important;
+    }
+    
+    h2, h3 {
+        font-size: 1.5rem !important;
+    }
+}
+
+/* iPad Landscape Specific (1024px) */
+@media (width: 1024px) and (orientation: landscape) {
+    /* Two column layouts work well */
+    .grid.grid-cols-1.lg\:grid-cols-2 {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    
+    /* Three columns for stats */
+    .grid.grid-cols-2.md\:grid-cols-4 {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+}
+
+/* Mobile landscape optimizations */
+@media (max-height: 500px) and (orientation: landscape) {
+    #main-content {
+        padding-top: 3.5rem !important;
+        padding-bottom: 6rem !important;
+    }
+
+    nav.fixed.bottom-8 {
+        bottom: 0.5rem !important;
+    }
+
+    .dock-container {
+        padding: 0.25rem !important;
+    }
+
+    .dock-icon {
+        width: 2.25rem !important;
+        height: 2.25rem !important;
+    }
+
+    .dock-icon i {
+        font-size: 1rem !important;
+    }
+
+    header .glass {
+        padding: 0.375rem 0.5rem !important;
+    }
+
+    /* Riduce altezza header in landscape */
+    header .w-8.h-8 {
+        width: 1.5rem !important;
+        height: 1.5rem !important;
+    }
+
+    header h1 {
+        font-size: 0.75rem !important;
+    }
+
+    /* Modali più compatte in landscape */
+    .modal-clean {
+        max-height: 90vh !important;
+    }
+}
+
+/* iOS Safe Area Support */
+@supports (padding: env(safe-area-inset-top)) {
+    body {
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+    }
+
+    header {
+        padding-top: calc(env(safe-area-inset-top) + 0.75rem) !important;
+    }
+
+    nav.fixed.bottom-8 {
+        padding-bottom: calc(env(safe-area-inset-bottom) + 1rem) !important;
+    }
+
+    @media (max-width: 767px) {
+        #main-content {
+            padding-top: calc(env(safe-area-inset-top) + 5rem) !important;
+            padding-bottom: calc(env(safe-area-inset-bottom) + 10rem) !important;
+        }
+    }
+    
+    /* iPad specific safe area adjustments */
+    @media (min-width: 768px) and (max-width: 1024px) {
+        #main-content {
+            padding-top: calc(env(safe-area-inset-top) + 6rem) !important;
+            padding-bottom: calc(env(safe-area-inset-bottom) + 8rem) !important;
+        }
+    }
+}
+
+/* Keyboard visible adjustments for iPad */
+@media (min-width: 768px) and (max-width: 1024px) {
+    /* When keyboard is visible, modals should be scrollable */
+    .modal-clean {
+        position: fixed !important;
+        top: 5vh !important;
+        max-height: 85vh !important;
+        overflow-y: auto !important;
+    }
+    
+    /* Form inputs should scroll into view when focused */
+    input:focus,
+    textarea:focus,
+    select:focus {
+        scroll-margin-top: 100px;
+        scroll-margin-bottom: 100px;
+    }
+}
+
+/* Migliora scroll momentum su iOS */
+#main-content {
+    overflow-x: hidden !important;
+}
+
+#main-content,
+.custom-scrollbar,
+.overflow-y-auto,
+.overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Electron: rende l'header la drag region per spostare la finestra */
+header {
+    -webkit-app-region: drag;
+    animation: slideDownHeader 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s backwards;
+}
+
+/* Tutti gli elementi interattivi nell'header NON devono essere drag */
+header button,
+header a,
+header [onclick],
+header #header-profile,
+header #theme-toggle,
+header .pointer-events-auto {
+    -webkit-app-region: no-drag;
+}
+
+@keyframes slideDownHeader {
+    from {
+        transform: translateY(-100%) scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+/* Welcome screen animations */
+#welcome-screen h1 {
+    animation: fadeInScale 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s backwards;
+}
+
+#welcome-screen button {
+    animation: fadeInScale 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s backwards;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+#welcome-screen button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 24px rgba(10, 132, 255, 0.3);
+}
+
+#welcome-screen button:active {
+    transform: scale(0.97);
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* === PLAYBOOK STYLES === */
+
+/* Full page layout */
+.playbook-page {
+    width: 100%;
+}
+
+/* Stats strip entrance */
+.playbook-stat-item {
+    animation: pb-fade-in 0.4s ease-out backwards;
+}
+.playbook-stat-item:nth-child(1) { animation-delay: 0s; }
+.playbook-stat-item:nth-child(2) { animation-delay: 0.05s; }
+.playbook-stat-item:nth-child(3) { animation-delay: 0.1s; }
+.playbook-stat-item:nth-child(4) { animation-delay: 0.15s; }
+
+/* Card entrance stagger */
+.playbook-card {
+    animation: pb-fade-in 0.4s ease-out backwards;
+}
+.playbook-card:nth-child(1) { animation-delay: 0.05s; }
+.playbook-card:nth-child(2) { animation-delay: 0.1s; }
+.playbook-card:nth-child(3) { animation-delay: 0.15s; }
+.playbook-card:nth-child(4) { animation-delay: 0.2s; }
+.playbook-card:nth-child(5) { animation-delay: 0.25s; }
+.playbook-card:nth-child(6) { animation-delay: 0.3s; }
+
+@keyframes pb-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Rule items entrance */
+.playbook-rule-item {
+    animation: pb-fade-in 0.3s ease-out backwards;
+}
+.playbook-rule-item:nth-child(1) { animation-delay: 0.03s; }
+.playbook-rule-item:nth-child(2) { animation-delay: 0.06s; }
+.playbook-rule-item:nth-child(3) { animation-delay: 0.09s; }
+.playbook-rule-item:nth-child(4) { animation-delay: 0.12s; }
+.playbook-rule-item:nth-child(5) { animation-delay: 0.15s; }
+
+
+/* Loading spinner animation */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+    animation: spin 0.8s linear infinite;
+}
+
+/* Shimmer loading effect */
+@keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+}
+
+.skeleton {
+    background: linear-gradient(90deg, var(--input-bg) 25%, var(--input-focus) 50%, var(--input-bg) 75%);
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite;
+}
+
+/* Ottimizzazioni specifiche per gesti touch */
+button,
+a,
+.dock-icon,
+.card-apple {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Touch device detection - disable hover effects on touch-only devices */
+@media (hover: none) and (pointer: coarse) {
+    /* Remove hover effects on touch-only devices */
+    button:hover,
+    .card-apple:hover,
+    .dock-icon:hover {
+        transform: none !important;
+        box-shadow: none !important;
+    }
+    
+    /* Use active states instead */
+    button:active,
+    .card-apple:active,
+    .dock-icon:active {
+        transform: scale(0.97) !important;
+        transition: transform 0.1s ease !important;
+    }
+    
+    /* Remove icon hover animations on touch */
+    button:hover i {
+        transform: none !important;
+        animation: none !important;
+    }
+}
+
+/* Devices with hover support (desktop and iPad with pointer) */
+@media (hover: hover) and (pointer: fine) {
+    /* Effetto premium senza spostare l'hitbox (translateY causa click area sfasata) */
+    button:hover {
+        box-shadow: 0 10px 28px -4px rgba(0, 0, 0, 0.4),
+                    0 0 0 1px rgba(255, 255, 255, 0.06);
+    }
+    
+    .card-apple:hover {
+        transform: translateY(-2px); /* OK su card non-interattive */
+    }
+}
+
+/* Migliora performance animazioni su mobile */
+@media (max-width: 767px) {
+    .card-apple,
+    .dock-icon,
+    button {
+        will-change: transform;
+    }
+
+    /* Riduce complessità animazioni su mobile */
+    .card-apple:hover {
+        transform: scale(1.01);
+    }
+
+    /* Effetto touch feedback */
+    button:active,
+    .dock-icon:active {
+        transform: scale(0.95);
+        transition: transform 0.1s ease;
+    }
+}
+
+/* =========================================
+   REVIEW MODAL IMPROVEMENTS
+   ========================================= */
+
+/* Review Modal Container */
+#modal-review {
+    animation: slideInUp 0.25s ease-out;
+}
+
+@keyframes slideInUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Review modal responsive improvements */
+@media (min-width: 768px) and (max-width: 1024px) {
+    #modal-review .bg-\[var\(--bg-card\)\] {
+        max-width: 95vw !important;
+        max-height: 90vh !important;
+    }
+    
+    /* Ensure form sections don't overlap */
+    #modal-review .grid.grid-cols-1.gap-4 > div {
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Better textarea sizing on tablet */
+    #modal-review textarea {
+        min-height: 120px !important;
+        font-size: 16px !important;
+    }
+    
+    /* Date input larger touch target */
+    #modal-review input[type="date"] {
+        min-height: 52px !important;
+        font-size: 16px !important;
+        padding: 0.875rem 1rem !important;
+    }
+    
+    /* Type selector buttons larger */
+    #modal-review button[id^="btn-"] {
+        min-height: 52px !important;
+        font-size: 1rem !important;
+    }
+}
+
+/* Todo modal responsive improvements */
+@media (min-width: 768px) and (max-width: 1024px) {
+    #modal-todo #todo-content,
+    #modal-edit-todo .bg-\[var\(--bg-card\)\],
+    #modal-edit-weekly-goal .bg-\[var\(--bg-card\)\] {
+        max-width: 95vw !important;
+        max-height: 90vh !important;
+        overflow-y: auto !important;
+    }
+    
+    /* Better form inputs */
+    #modal-todo input,
+    #modal-todo select,
+    #modal-edit-todo input,
+    #modal-edit-todo select,
+    #modal-edit-weekly-goal input {
+        min-height: 52px !important;
+        font-size: 16px !important;
+        padding: 0.875rem 1rem !important;
+    }
+    
+    /* Tab buttons larger */
+    #modal-todo button[id^="tab-"] {
+        min-height: 52px !important;
+        font-size: 0.875rem !important;
+        padding: 0.875rem 1rem !important;
+    }
+    
+    /* Category buttons larger */
+    #modal-todo .type-btn {
+        min-height: 64px !important;
+        padding: 0.875rem !important;
+    }
+    
+    /* Submit buttons */
+    #modal-todo button[type="submit"],
+    #modal-edit-todo button[type="submit"],
+    #modal-edit-weekly-goal button[type="submit"] {
+        min-height: 56px !important;
+        font-size: 1rem !important;
+        padding: 1rem !important;
+    }
+}
+
+@media (max-width: 767px) {
+    #modal-review .bg-\[var\(--bg-card\)\] {
+        max-width: 100vw !important;
+        max-height: 95vh !important;
+        border-radius: 1.5rem 1.5rem 0 0 !important;
+    }
+    
+    /* Stack everything vertically on mobile */
+    #modal-review .grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* Todo modal mobile improvements */
+@media (max-width: 767px) {
+    #modal-todo #todo-content,
+    #modal-edit-todo .bg-\[var\(--bg-card\)\],
+    #modal-edit-weekly-goal .bg-\[var\(--bg-card\)\] {
+        max-width: 100vw !important;
+        max-height: 95vh !important;
+        border-radius: 1.5rem 1.5rem 0 0 !important;
+        padding: 1.5rem !important;
+    }
+    
+    /* Stack grids vertically */
+    #modal-todo .grid,
+    #modal-edit-todo .grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* Textarea focus states */
+textarea:focus,
+input:focus {
+    background-color: var(--input-focus);
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 3px var(--accent-blue);
+    opacity: 1;
+}
+
+/* Review Modal Scrollbar */
+#modal-review .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+}
+
+#modal-review .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#modal-review .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+}
+
+#modal-review .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* =========================================
+   PERFORMANCE E ACCESSIBILITÀ MOBILE
+   ========================================= */
+
+/* Riduce animazioni per utenti con preferenze reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .card-apple:hover {
+        transform: none !important;
+    }
+}
+
+/* Enhanced Focus States for Accessibility */
+*:focus-visible {
+    outline: 3px solid var(--accent-blue);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+button:focus-visible,
+.dock-icon:focus-visible {
+    outline: 3px solid var(--accent-blue);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 6px rgba(10, 132, 255, 0.2);
+}
+
+/* =========================================
+   DASHBOARD & CHARTS MOBILE OPTIMIZATION
+   ========================================= */
+
+/* Trade Modal responsive improvements */
+@media (min-width: 768px) and (max-width: 1024px) {
+    #modal-trade .bg-\[var\(--bg-card\)\] {
+        max-width: 95vw !important;
+        max-height: 90vh !important;
+    }
+    
+    /* Better form inputs */
+    #modal-trade input,
+    #modal-trade select,
+    #modal-trade textarea {
+        min-height: 52px !important;
+        font-size: 16px !important;
+        padding: 0.875rem 1rem !important;
+    }
+    
+    /* Action buttons larger */
+    #modal-trade button[type="button"],
+    #modal-trade button[onclick*="saveTrade"] {
+        min-height: 52px !important;
+        font-size: 1rem !important;
+        padding: 0.875rem 1.5rem !important;
+    }
+    
+    /* Grid adjustments for trade details */
+    #modal-trade .grid.grid-cols-1.md\:grid-cols-2,
+    #modal-trade .grid.grid-cols-1.md\:grid-cols-3 {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+    
+    /* Direction buttons larger */
+    #modal-trade label:has(input[name="direction_radio"]) > div {
+        min-height: 52px !important;
+        padding: 0.875rem 1.25rem !important;
+    }
+    
+    /* P&L input larger */
+    #modal-trade input#t-pnl {
+        font-size: 2.5rem !important;
+    }
+    
+    /* Account selection items */
+    #modal-trade label:has(input[name="t-accounts"]) {
+        min-height: 56px !important;
+        padding: 0.875rem 1rem !important;
+    }
+}
+
+/* Journal page - New Trade button improvements */
+@media (min-width: 768px) and (max-width: 1024px) {
+    /* Make "Nuovo Trade" buttons more prominent on tablet */
+    button[onclick*="openNewTradeModal"],
+    button#cmd-new-trade {
+        min-height: 52px !important;
+        min-width: 52px !important;
+        padding: 0.875rem 1.5rem !important;
+        font-size: 1rem !important;
+        font-weight: 700 !important;
+        touch-action: manipulation !important;
+        -webkit-tap-highlight-color: transparent !important;
+    }
+    
+    button[onclick*="openNewTradeModal"] i,
+    button#cmd-new-trade i {
+        font-size: 1.5rem !important;
+    }
+    
+    /* Ensure sync button is also large enough */
+    button[onclick*="syncBrokerTrades"] {
+        min-height: 52px !important;
+        min-width: 52px !important;
+        padding: 0.875rem !important;
+    }
+}
+
+@media (max-width: 767px) {
+    /* Dashboard layout single column */
+    .grid.grid-cols-1.lg\\:grid-cols-2 {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+    
+    /* Chart containers responsive */
+    canvas {
+        max-height: 280px !important;
+        width: 100% !important;
+        height: auto !important;
+    }
+    
+    /* Stats cards horizontal scroll con snap */
+    .grid.grid-cols-2.md\\:grid-cols-4 {
+        display: flex !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+        gap: 0.75rem !important;
+        padding-bottom: 0.5rem;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    
+    .grid.grid-cols-2.md\\:grid-cols-4::-webkit-scrollbar {
+        display: none;
+    }
+    
+    .grid.grid-cols-2.md\\:grid-cols-4 > div {
+        min-width: 45% !important;
+        flex-shrink: 0;
+        scroll-snap-align: start;
+    }
+    
+    /* All buttons have minimum touch target */
+    button {
+        min-height: 44px !important;
+        min-width: 44px !important;
+    }
+    
+    /* All inputs prevent zoom */
+    input,
+    select,
+    textarea {
+        font-size: 16px !important;
+    }
+    
+    /* Performance indicators - usa classe generica senza escape */
+    .bg-card {
+        contain: layout style paint;
+    }
+    
+    /* GPU acceleration per scroll fluido */
+    .overflow-y-auto {
+        transform: translateZ(0);
+        -webkit-transform: translateZ(0);
+    }
+    
+    /* Riduce blur pesanti per performance */
+    .backdrop-blur-2xl {
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+    }
+    
+    .backdrop-blur-xl {
+        backdrop-filter: blur(8px) !important;
+        -webkit-backdrop-filter: blur(8px) !important;
+    }
+    
+    /* Ottimizza ombre */
+    .shadow-2xl {
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2) !important;
+    }
+    
+    .shadow-xl {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    }
+    
+    /* GPU acceleration elementi interattivi */
+    .dock-icon,
+    button {
+        will-change: transform;
+        transform: translate3d(0, 0, 0);
+        -webkit-transform: translate3d(0, 0, 0);
+    }
+    
+    /* Content visibility per lazy loading */
+    img {
+        content-visibility: auto;
+    }
+    
+    /* Contiene layout reflows */
+    .stat-box {
+        contain: layout style paint;
+    }
+}
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(10, 132, 255, 0.15),
+                0 4px 12px -4px rgba(10, 132, 255, 0.25);
+}
+
+/* Skeleton Loading States */
+.skeleton-card {
+    background: linear-gradient(
+        90deg,
+        var(--input-bg) 25%,
+        var(--input-focus) 50%,
+        var(--input-bg) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 20px;
+}
+
+.skeleton-text {
+    height: 1em;
+    background: linear-gradient(
+        90deg,
+        var(--input-bg) 25%,
+        var(--input-focus) 50%,
+        var(--input-bg) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 8px;
+}
+
+.skeleton-circle {
+    background: linear-gradient(
+        90deg,
+        var(--input-bg) 25%,
+        var(--input-focus) 50%,
+        var(--input-bg) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 50%;
+}
+
+/* Kbd styling for keyboard shortcuts */
+kbd {
+    display: inline-block;
+    padding: 3px 8px;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--text-main);
+    background: var(--input-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 6px;
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    font-weight: 600;
+}
+
+/* Scroll Progress Bar Styles */
+#scroll-progress {
+    transition: width 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 3px;
+    box-shadow: 0 0 10px rgba(10, 132, 255, 0.5);
+}
+
+/* Improved Empty States */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+    opacity: 0;
+    animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.empty-state-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.5;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Success Toast Enhancements */
+#toast {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+#toast.show {
+    animation: toastSlideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes toastSlideUp {
+    from {
+        transform: translate(-50%, 20px);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, 0);
+        opacity: 1;
+    }
+}
+
+/* Light mode enhancements for new features */
+[data-theme="light"] kbd {
+    background: rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.06),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+[data-theme="light"] .skeleton-card,
+[data-theme="light"] .skeleton-text,
+[data-theme="light"] .skeleton-circle {
+    background: linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0.04) 25%,
+        rgba(0, 0, 0, 0.08) 50%,
+        rgba(0, 0, 0, 0.04) 75%
+    );
+    background-size: 200% 100%;
+}
+
+/* Interactive elements hover glow */
+.card-apple,
+button,
+.dock-icon {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Performance hints per il browser */
+.card-apple,
+.dock-icon,
+.modal-clean,
+button {
+    contain: layout style paint;
+}
+
+/* Ottimizzazione rendering immagini su mobile */
+@media (max-width: 768px) {
+    img {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
+
+/* Loading states più evidenti su mobile */
+@media (max-width: 768px) {
+    .loading,
+    [data-loading="true"] {
+        position: relative;
+        pointer-events: none;
+        opacity: 0.6;
+    }
+
+    .loading::after,
+    [data-loading="true"]::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 24px;
+        height: 24px;
+        margin: -12px 0 0 -12px;
+        border: 3px solid var(--glass-border);
+        border-top-color: var(--accent-blue);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+}
+
+/* Migliora contrasto per luce solare */
+@media (max-width: 768px) and (prefers-contrast: high) {
+    .glass {
+        backdrop-filter: blur(30px);
+        -webkit-backdrop-filter: blur(30px);
+    }
+
+    .text-muted,
+    [class*="text-gray"] {
+        opacity: 1;
+        font-weight: 500;
+    }
+}
+
+/* Pull-to-refresh ottimizzato */
+@media (max-width: 768px) {
+    #main-content {
+        overscroll-behavior-y: contain;
+    }
+}
+
+/* Focus visibile per accessibilità tastiera su mobile */
+@media (max-width: 768px) {
+    button:focus-visible,
+    a:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    textarea:focus-visible {
+        outline: 3px solid var(--accent-blue);
+        outline-offset: 2px;
+    }
+}
+
+/* =========================================
+   MICRO-INTERACTIONS & ICON ANIMATIONS
+   ========================================= */
+
+/* Icons rotation on hover */
+i.ph-gear,
+i.ph-gear-six {
+    transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+button:hover i.ph-gear,
+button:hover i.ph-gear-six {
+    transform: rotate(90deg);
+}
+
+/* Arrow bounce animation */
+i.ph-arrow-right,
+i.ph-caret-right {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+button:hover i.ph-arrow-right,
+a:hover i.ph-caret-right {
+    animation: bounceRight 0.6s ease-in-out infinite;
+}
+
+@keyframes bounceRight {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(4px); }
+}
+
+/* Plus icon rotation */
+i.ph-plus {
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+button:hover i.ph-plus {
+    transform: rotate(90deg) scale(1.1);
+}
+
+/* Trash icon shake on hover */
+i.ph-trash {
+    transition: transform 0.3s ease;
+}
+
+button:hover i.ph-trash {
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px) rotate(-5deg); }
+    75% { transform: translateX(4px) rotate(5deg); }
+}
+
+/* Heart beat animation */
+i.ph-heart,
+i.ph-heart-fill {
+    transition: transform 0.3s ease;
+}
+
+button:hover i.ph-heart,
+button:hover i.ph-heart-fill {
+    animation: heartBeat 0.6s ease-in-out;
+}
+
+@keyframes heartBeat {
+    0%, 100% { transform: scale(1); }
+    25% { transform: scale(1.2); }
+    50% { transform: scale(1.1); }
+}
+
+/* Check icon scale */
+i.ph-check,
+i.ph-check-circle {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+button:hover i.ph-check,
+button:hover i.ph-check-circle {
+    transform: scale(1.3);
+    filter: drop-shadow(0 0 8px var(--accent-green));
+}
+
+/* Eye icon blink */
+i.ph-eye {
+    animation: blink 3s infinite;
+}
+
+@keyframes blink {
+    0%, 96%, 100% { opacity: 1; }
+    98% { opacity: 0.3; }
+}
+
+/* Floating animation for badges/notifications */
+.floating {
+    animation: floating 3s ease-in-out infinite;
+}
+
+@keyframes floating {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+}
+
+/* Glow effect */
+.glow {
+    animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes glow {
+    0%, 100% { box-shadow: 0 0 5px currentColor; }
+    50% { box-shadow: 0 0 20px currentColor, 0 0 30px currentColor; }
+}
+
+/* Success animation */
+@keyframes successPop {
+    0% { transform: scale(0); opacity: 0; }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.success-pop {
+    animation: successPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Notification badge pulse */
+.badge-pulse {
+    animation: badgePulse 2s infinite;
+}
+
+@keyframes badgePulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 4px rgba(239, 68, 68, 0);
+    }
+}
+/* Drag & Drop Styles */
+.todo-day-container {
+    transition: all 0.3s ease;
+}
+
+.todo-day-container.drag-over {
+    background-color: rgba(10, 132, 255, 0.1) !important;
+    border-color: var(--accent-blue) !important;
+    border-width: 2px !important;
+    border-style: dashed !important;
+}
+
+[draggable="true"] {
+    cursor: move !important;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+[draggable="true"]:active {
+    cursor: grabbing !important;
+}
+
+[draggable="true"].dragging {
+    opacity: 0.5;
+    transform: rotate(2deg);
+}
+
+/* Achievement Popup Animations */
+.animate-fade-in {
+    animation: fadeIn 0.2s ease-out;
+}
+
+.animate-fade-out {
+    animation: fadeOut 0.3s ease-out forwards;
+}
+
+.animate-scale-in {
+    animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 0;
+        transform: scale(1); /* Optional: slight scale out or just stay */
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Force fade animations on modal overlay */
+#modal-overlay.animate-fade-in {
+    animation: fadeIn 0.2s ease-out;
+}
+
+#modal-overlay.animate-fade-out {
+    animation: fadeOut 0.2s ease-out forwards;
+}
+
+/* Remove focus effects from account selection checkboxes */
+input[name="t-accounts"]:focus,
+input[name="t-accounts"]:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+    background: transparent !important;
+    border-color: transparent !important;
+}
+
+label:has(input[name="t-accounts"]):focus,
+label:has(input[name="t-accounts"]):focus-visible,
+label:has(input[name="t-accounts"]):focus-within {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Disable all hover effects for settings cards - CLEAN VERSION */
+.settings-no-hover {
+    transition: none !important;
+    transform: none !important;
+    backface-visibility: hidden;
+}
+
+.settings-no-hover:hover,
+.settings-no-hover:focus,
+.settings-no-hover:active {
+    background: var(--bg-card) !important;
+    background-color: var(--bg-card) !important;
+    background-image: none !important;
+    transform: none !important;
+    box-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    animation: none !important;
+    z-index: auto !important;
+    border-color: rgba(255, 255, 255, 0.05) !important; /* Force keep existing border */
+}
+
+/* Light mode manual override because we can't trust existing classes in this specific context */
+[data-theme="light"] .settings-no-hover:hover {
+    background: #FFFFFF !important;
+    background-color: #FFFFFF !important;
+    border-color: rgba(0, 0, 0, 0.1) !important; /* Match light mode border */
+}
+
+/* Prevent pseudoelement overlays */
+.settings-no-hover:hover::before,
+.settings-no-hover:hover::after {
+    display: none !important;
+    opacity: 0 !important;
+    content: none !important;
+}
+
+/* Specific overrides for common tailwind interactions */
+div.settings-no-hover:hover {
+    transform: none !important;
+}
+
+
+/* Navigation Toggle Animation */
+nav {
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease-out !important;
+}
+
+.nav-hidden-mode {
+    transform: translateY(200%) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* ========================================
+   FIX TOUCH EVENTS IPAD/IOS
+   ======================================== */
+
+/* Garantisce che tutti gli elementi con onclick siano cliccabili su iPad */
+[onclick] {
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* Fix per div cliccabili (tipo card) */
+div[onclick] {
+    pointer-events: auto !important;
+    position: relative;
+}
+
+/* Fix per elementi con cursor-pointer */
+.cursor-pointer {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* Migliora scrolling su contenuti overflow */
+.overflow-y-auto,
+.overflow-x-auto,
+.overflow-auto {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+}
+
+/* ==========================================================
+   LIGHT MODE — COMPLETE READABILITY FIX
+   Fix ALL text, buttons and backgrounds invisible in light mode
+   ========================================================== */
+
+/* --- Gray text (designed for dark mode, invisible on white) --- */
+[data-theme="light"] .text-gray-300 {
+    color: #555555 !important;
+}
+[data-theme="light"] .text-gray-400 {
+    color: #4B5563 !important;
+}
+[data-theme="light"] .text-gray-500 {
+    color: #374151 !important;
+}
+[data-theme="light"] .text-gray-600 {
+    color: #1F2937 !important;
+}
+
+/* --- Subtle tinted icon containers (near-invisible on white) --- */
+[data-theme="light"] .bg-gray-500\/10 {
+    background-color: rgba(0, 0, 0, 0.06) !important;
+}
+[data-theme="light"] .bg-gray-500\/20 {
+    background-color: rgba(0, 0, 0, 0.08) !important;
+}
+[data-theme="light"] .bg-blue-500\/10 {
+    background-color: rgba(0, 122, 255, 0.1) !important;
+}
+[data-theme="light"] .bg-green-500\/10 {
+    background-color: rgba(52, 199, 89, 0.1) !important;
+}
+[data-theme="light"] .bg-red-500\/10 {
+    background-color: rgba(255, 59, 48, 0.08) !important;
+}
+[data-theme="light"] .bg-purple-500\/10 {
+    background-color: rgba(175, 82, 222, 0.08) !important;
+}
+[data-theme="light"] .bg-yellow-500\/10 {
+    background-color: rgba(255, 204, 0, 0.12) !important;
+}
+
+/* --- Tinted borders (near-invisible on white) --- */
+[data-theme="light"] .border-gray-500\/30 {
+    border-color: rgba(0, 0, 0, 0.14) !important;
+}
+[data-theme="light"] .border-blue-500\/20 {
+    border-color: rgba(0, 122, 255, 0.28) !important;
+}
+[data-theme="light"] .border-blue-500\/30 {
+    border-color: rgba(0, 122, 255, 0.38) !important;
+}
+[data-theme="light"] .border-green-500\/30 {
+    border-color: rgba(52, 199, 89, 0.4) !important;
+}
+[data-theme="light"] .border-red-500\/20 {
+    border-color: rgba(255, 59, 48, 0.28) !important;
+}
+[data-theme="light"] .border-red-500\/30 {
+    border-color: rgba(255, 59, 48, 0.38) !important;
+}
+[data-theme="light"] .border-purple-500\/20 {
+    border-color: rgba(175, 82, 222, 0.3) !important;
+}
+[data-theme="light"] .border-yellow-500\/20 {
+    border-color: rgba(200, 160, 0, 0.4) !important;
+}
+[data-theme="light"] .border-yellow-500\/30 {
+    border-color: rgba(200, 160, 0, 0.5) !important;
+}
+
+/* --- Toggle track: bg-white/10 is invisible on white bg --- */
+[data-theme="light"] .bg-white\/10.rounded-full {
+    background-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+/* --- Todo item dark hover (#2a2a2d) is black-on-white disaster --- */
+[data-theme="light"] .hover\:bg-\[\#2a2a2d\]:hover {
+    background-color: rgba(0, 0, 0, 0.04) !important;
+}
+
+/* --- group-hover:text-white becomes invisible on light backgrounds --- */
+[data-theme="light"] .group:hover .group-hover\:text-white {
+    color: var(--text-main) !important;
+}
+
+/* --- group-hover:bg-white/20 is near-transparent on white --- */
+[data-theme="light"] .group:hover .group-hover\:bg-white\/20 {
+    background-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+/* --- Pipe separator "text-white opacity-20" is invisible on white --- */
+[data-theme="light"] .text-white.opacity-20:not(.preserve-white),
+[data-theme="light"] .opacity-20.text-white:not(.preserve-white) {
+    color: var(--text-muted) !important;
+    opacity: 0.4 !important;
+}
+
+/* --- Custom scrollbar thumb visible in light mode --- */
+[data-theme="light"] .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.15) !important;
+}
+[data-theme="light"] .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3) !important;
+}
+
+/* --- text-blue-400 on bg-blue-500/10 (sync button etc.) --- */
+[data-theme="light"] .bg-blue-500\/10.text-blue-400,
+[data-theme="light"] .text-blue-400.bg-blue-500\/10 {
+    color: #0055cc !important;
+}
+
+/* --- hover:bg-blue-500 state: keep white text on solid blue --- */
+[data-theme="light"] .hover\:bg-blue-500:hover {
+    color: #ffffff !important;
+}
+[data-theme="light"] .hover\:bg-red-500:hover {
+    color: #ffffff !important;
+}
+[data-theme="light"] .hover\:bg-purple-500:hover {
+    color: #ffffff !important;
+}
+[data-theme="light"] .hover\:bg-yellow-500:hover {
+    color: #1a1a1a !important;
+}
+
+/* --- Input color in light mode --- */
+[data-theme="light"] input,
+[data-theme="light"] select,
+[data-theme="light"] textarea {
+    color: var(--text-main) !important;
+}
+
+/* --- Fix hardcoded text-white in peer-checked toggles (radio labels) --- */
+[data-theme="light"] .peer-checked\:bg-gray-500:checked ~ * {
+    color: #ffffff !important;
+}
+
+/* ==========================================================
+   MODAL LIGHT MODE FIXES (Override global preserve-white where it breaks readability)
+   ========================================================== */
+[data-theme="light"] select {
+    color: var(--text-main) !important;
+}
+
+/* Fix specific placeholders in todo/modals that are hardcoded white */
+[data-theme="light"] .placeholder-white\/20::placeholder,
+[data-theme="light"] .placeholder-white\/30::placeholder {
+    color: var(--text-muted) !important;
+    opacity: 0.6 !important;
+}
+
+/* ==========================================================
+   PLAYBOOK PAGE — Premium Layout
+   ========================================================== */
+
+/* Full-width page container — no max-width constraint */
+.playbook-page {
+    width: 100%;
+}
+
+/* Responsive auto-fit grid: fills all available width */
+.playbook-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    width: 100%;
+}
+
+@media (min-width: 1400px) {
+    .playbook-grid {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    .playbook-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}
+
+/* Playbook Card */
+.playbook-card {
+    background: var(--bg-card);
+    border-radius: 16px;
+    border: 1px solid var(--glass-border);
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.playbook-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.playbook-card:active {
+    transform: translateY(0);
+}
+
+/* Card image container */
+.playbook-card-image {
+    width: 100%;
+    height: 180px;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.playbook-card-image img {
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.playbook-card:hover .playbook-card-image img {
+    transform: scale(1.08);
+}
+
+/* Card body */
+.playbook-card-body {
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Entrance animation */
+@keyframes playbookCardIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Light theme overrides */
+[data-theme="light"] .playbook-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .playbook-card:hover {
+    box-shadow: 
+        0 20px 50px -12px rgba(0, 0, 0, 0.12),
+        0 0 0 1px rgba(59, 130, 246, 0.2),
+        0 0 30px -5px rgba(59, 130, 246, 0.08);
+}
