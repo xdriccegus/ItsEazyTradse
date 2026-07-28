@@ -40,6 +40,36 @@ const ui = {
         return allowedPages.has(candidate) ? candidate : 'dashboard';
     },
 
+    // Aggiorna la pagina corrente sul posto, senza passare dal router: niente
+    // dissolvenza, niente scroll che torna in cima, niente cambio di pagina.
+    // Serve alle sincronizzazioni, che non devono farsi notare dall'utente.
+    refreshViewSilently() {
+        // 'drafts' condivide il render del journal: rigenerarlo dal router farebbe
+        // saltare l'utente sulla pagina sbagliata.
+        const renderers = { dashboard: 'dashboard', journal: 'journal', drafts: 'journal', accounts: 'accounts' };
+        const renderer = renderers[router.currentPage];
+
+        if (!renderer || typeof ui[renderer] !== 'function' || !ui.container) return;
+
+        // Mai interrompere l'utente mentre ha un modal aperto o sta scrivendo.
+        if (document.body.classList.contains('app-modal-active')) return;
+        if (document.querySelector('input:focus, textarea:focus, select:focus')) return;
+
+        const scrollTop = ui.container.scrollTop;
+        const restoreScroll = () => { if (ui.container) ui.container.scrollTop = scrollTop; };
+
+        try {
+            const result = ui[renderer]();
+            if (result && typeof result.then === 'function') {
+                result.then(restoreScroll).catch(e => console.error('Refresh silenzioso fallito:', e));
+            } else {
+                restoreScroll();
+            }
+        } catch (e) {
+            console.error('Refresh silenzioso fallito:', e);
+        }
+    },
+
     setBackgroundInteractivity(disabled, allowedRootIds = ['modal-overlay']) {
         const overlay = document.getElementById('modal-overlay');
         const bodyChildren = Array.from(document.body.children || []);
@@ -105,52 +135,20 @@ const ui = {
         }
 
 
-        // Gestione tema: segue il sistema a meno che l'utente non lo cambi manualmente
+        // Gestione tema: il riferimento è sempre il sistema operativo. La scelta
+        // manuale dal pulsante è solo un'eccezione temporanea, che decade appena
+        // il sistema cambia tema.
+        const systemDark = window.matchMedia('(prefers-color-scheme: dark)');
         const manualTheme = localStorage.getItem('eazytrader_theme_manual');
-        let theme;
-        
-        if (manualTheme) {
-            // L'utente ha scelto manualmente un tema
-            theme = manualTheme;
-        } else {
-            // Segui il tema del sistema
-            theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        }
-        
-        document.documentElement.setAttribute('data-theme', theme);
-        
-        // Imposta l'icona del tema nell'header
-        setTimeout(() => {
-            const themeIcon = document.getElementById('theme-icon');
-            if (themeIcon) {
-                if (theme === 'light') {
-                    themeIcon.className = 'ph-bold ph-sun text-lg';
-                } else {
-                    themeIcon.className = 'ph-bold ph-moon text-lg';
-                }
-            }
-        }, 0);
-        
-        // Ascolta i cambiamenti del tema di sistema (solo se non c'è preferenza manuale)
-        if (!manualTheme) {
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-                // Non fare nulla se l'utente ha impostato manualmente un tema
-                if (localStorage.getItem('eazytrader_theme_manual')) return;
-                
-                const newTheme = e.matches ? 'dark' : 'light';
-                document.documentElement.setAttribute('data-theme', newTheme);
-                
-                // Aggiorna l'icona
-                const themeIcon = document.getElementById('theme-icon');
-                if (themeIcon) {
-                    if (newTheme === 'light') {
-                        themeIcon.className = 'ph-bold ph-sun text-lg';
-                    } else {
-                        themeIcon.className = 'ph-bold ph-moon text-lg';
-                    }
-                }
-            });
-        }
+
+        this.applyTheme(manualTheme || (systemDark.matches ? 'dark' : 'light'));
+
+        systemDark.addEventListener('change', (e) => {
+            // Il sistema ha l'ultima parola: dimentica l'eventuale scelta manuale.
+            localStorage.removeItem('eazytrader_theme_manual');
+            localStorage.removeItem('eazytrader_theme');
+            ui.applyTheme(e.matches ? 'dark' : 'light');
+        });
 
         this.setupScrollProgress();
         this.renderInitialModals();
@@ -1978,24 +1976,23 @@ const ui = {
         };
     },
 
-    toggleTheme() { 
-        const n = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light'; 
-        document.documentElement.setAttribute('data-theme', n); 
-        
-        // Salva la preferenza manuale dell'utente
-        localStorage.setItem('eazytrader_theme_manual', n);
-        // Manteniamo anche la vecchia chiave per retrocompatibilità
-        localStorage.setItem('eazytrader_theme', n); 
-        
-        // Aggiorna l'icona del pulsante tema nell'header
+    applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+
         const themeIcon = document.getElementById('theme-icon');
         if (themeIcon) {
-            if (n === 'light') {
-                themeIcon.className = 'ph-bold ph-sun text-lg';
-            } else {
-                themeIcon.className = 'ph-bold ph-moon text-lg';
-            }
+            themeIcon.className = theme === 'light' ? 'ph-bold ph-sun text-lg' : 'ph-bold ph-moon text-lg';
         }
+    },
+
+    toggleTheme() {
+        const n = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        ui.applyTheme(n);
+
+        // Eccezione manuale: vale finché il sistema non cambia tema.
+        localStorage.setItem('eazytrader_theme_manual', n);
+        // Manteniamo anche la vecchia chiave per retrocompatibilità
+        localStorage.setItem('eazytrader_theme', n);
     },
 
     populateSelects() { },
@@ -3578,30 +3575,13 @@ const ui = {
         if (typeof CloudSync !== 'undefined' && !CloudSync._uiListenerAttached) {
             CloudSync._uiListenerAttached = true;
 
-            window.addEventListener('cloudsync:status', (e) => {
-                const status = e.detail?.status;
-                if (status === 'syncing') {
-                    const indicator = document.getElementById('autosave-indicator');
-                    if (indicator) {
-                        indicator.querySelector('span').textContent = '☁️ Sync...';
-                        indicator.style.opacity = '1';
-                        setTimeout(() => { indicator.style.opacity = '0'; }, 1500);
-                    }
-                }
-            });
-
+            // Nessun indicatore visivo sullo stato 'syncing': la sincronizzazione
+            // di background deve restare invisibile.
             window.addEventListener('cloudsync:updated', (e) => {
                 if (e.detail?.manual) {
                     ui.showToast('☁️ Dati sincronizzati dal cloud');
                 }
-                // Aggiorna in modo silenzioso in-place senza overlay di transizione se non ci sono modal aperti
-                if (!document.body.classList.contains('app-modal-active') && !document.querySelector('input:focus, textarea:focus')) {
-                    if (router.currentPage === 'dashboard') {
-                        ui.dashboard();
-                    } else if (router.currentPage === 'journal') {
-                        ui.journal();
-                    }
-                }
+                ui.refreshViewSilently();
             });
         }
     },
@@ -4139,11 +4119,12 @@ const ui = {
                 });
             }
 
-            // Ricarica la pagina corrente se siamo su journal/dashboard
-            if (router.currentPage === 'journal') router.journal();
-            if (router.currentPage === 'drafts') router.drafts();
-            if (router.currentPage === 'dashboard') router.dashboard();
-            if (router.currentPage === 'accounts') router.accounts();
+            // Aggiorna la vista solo se è cambiato davvero qualcosa (o se il sync
+            // è stato chiesto dall'utente): il polling di background non deve
+            // ridisegnare la pagina ogni 30 secondi.
+            if (successCount > 0 || !silent) {
+                ui.refreshViewSilently();
+            }
 
             return results;
         } catch (e) {
@@ -6319,7 +6300,7 @@ const ui = {
         if (!shareModal) {
             shareModal = document.createElement('div');
             shareModal.id = 'modal-share';
-            shareModal.className = 'fixed inset-0 z-[110] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm transition-all duration-300 opacity-0 pointer-events-none';
+            shareModal.className = 'fixed inset-0 z-[110] hidden flex items-center justify-center overflow-y-auto p-4 bg-black/80 backdrop-blur-sm transition-all duration-300 opacity-0 pointer-events-none';
             document.body.appendChild(shareModal);
         }
 
@@ -6442,15 +6423,19 @@ const ui = {
             </div>
         `;
 
+        const cardViewport = ui._shareCardViewport();
+
         shareModal.innerHTML = `
             <div class="flex flex-col items-center gap-4 max-w-[95vw]">
                 <!-- Container della card, viene scalato per lo schermo ma renderizzato nativamente a dimensione fissa -->
                 <div class="relative p-2 bg-[var(--bg-card)] rounded-[32px] border border-[var(--glass-border)] shadow-2xl flex flex-col gap-4 items-center">
-                    <div id="share-card-container" class="rounded-[24px] overflow-hidden shadow-2xl" style="width: 380px; height: 480px; transform: scale(min(1, (window.innerWidth - 48)/380)); transform-origin: top center; background: ${isLightMode ? '#ffffff' : '#09090b'};">
-                        ${cardHtml}
+                    <div class="rounded-[24px] overflow-hidden shadow-2xl" style="width: ${cardViewport.width}px; height: ${cardViewport.height}px;">
+                        <div id="share-card-container" style="width: 380px; height: 480px; transform: scale(${cardViewport.scale}); transform-origin: top left; background: ${isLightMode ? '#ffffff' : '#09090b'};">
+                            ${cardHtml}
+                        </div>
                     </div>
-                    
-                    <div class="flex gap-4 w-full px-4 pb-2" style="margin-top: calc(480px * min(1, (window.innerWidth - 48)/380) - 480px);">
+
+                    <div class="flex gap-4 w-full px-4 pb-2">
                         <button onclick="ui.downloadShareCard(this)" class="flex-1 py-4 bg-[var(--input-bg)] hover:bg-[var(--accent-blue)]/20 text-[var(--accent-blue)] border border-[var(--glass-border)] hover:border-[var(--accent-blue)]/50 rounded-2xl font-bold flex flex-col items-center gap-2 transition-all">
                             <i class="ph-bold ph-download-simple text-2xl"></i>
                             <span>Salva</span>
@@ -6486,55 +6471,73 @@ const ui = {
         // QR code rimosso
     },
 
+    // La card è disegnata a 380x480 px fissi: su schermi stretti va rimpicciolita.
+    // Il fattore si calcola qui in JS, perché il CSS da solo non sa leggere la
+    // larghezza della finestra dentro una scale().
+    _shareCardViewport() {
+        const scale = Math.min(1, (window.innerWidth - 48) / 380);
+        return {
+            scale,
+            width: Math.round(380 * scale),
+            height: Math.round(480 * scale)
+        };
+    },
+
+    // Opzioni di esportazione: 3x (1140x1440) per alta risoluzione.
+    _shareCardExportOptions() {
+        const scale = 3;
+        return {
+            quality: 1.0,
+            width: 380 * scale,
+            height: 480 * scale,
+            style: {
+                transform: `scale(${scale})`,
+                transformOrigin: 'top left',
+                width: '380px',
+                height: '480px'
+            }
+        };
+    },
+
+    _saveShareCardBlob(blob) {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.download = `EazyTrader_Trade_${new Date().getTime()}.png`;
+        link.href = url;
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+    },
+
     async downloadShareCard(button) {
         if (typeof domtoimage === 'undefined') {
             ui.showToast('⚠️ Errore: dom-to-image non caricato');
             return;
         }
-        
+
         const card = document.getElementById('share-card-content');
-        const container = document.getElementById('share-card-container');
         if (!card) return;
-        
+
         const btn = button || document.activeElement;
         const originalContent = btn ? btn.innerHTML : '';
         if (btn) btn.innerHTML = '<i class="ph-bold ph-spinner animate-spin text-2xl"></i><span>Elaborazione...</span>';
-        
-        // Salva e rimuovi temporaneamente la trasformazione scale
-        const originalTransform = container ? container.style.transform : '';
-        if (container) container.style.transform = 'scale(1)';
-        
+
         // Piccolo delay per assicurarsi che tutto sia renderizzato
         await new Promise(resolve => setTimeout(resolve, 100));
-        
+
         try {
             // Usa dom-to-image per una fedeltà assoluta (supporta meglio CSS moderni)
-            // Esportiamo a 3x (1140x1440) per alta risoluzione
-            const scale = 3;
-            const dataUrl = await domtoimage.toPng(card, {
-                quality: 1.0,
-                width: 380 * scale,
-                height: 480 * scale,
-                style: {
-                    transform: `scale(${scale})`,
-                    transformOrigin: 'top left',
-                    width: '380px',
-                    height: '480px'
-                }
-            });
-            
+            const dataUrl = await domtoimage.toPng(card, ui._shareCardExportOptions());
+
             const link = document.createElement('a');
             link.download = `EazyTrader_Trade_${new Date().getTime()}.png`;
             link.href = dataUrl;
             link.click();
-            
+
             ui.showToast('✅ Immagine salvata!');
         } catch (e) {
             console.error(e);
             ui.showToast('❌ Errore durante la creazione dell\'immagine');
         } finally {
-            // Ripristina la trasformazione originale
-            if (container) container.style.transform = originalTransform;
             if (btn) btn.innerHTML = originalContent;
         }
     },
@@ -6546,43 +6549,25 @@ const ui = {
         }
 
         const card = document.getElementById('share-card-content');
-        const container = document.getElementById('share-card-container');
         if (!card) return;
 
         const btn = button || document.activeElement;
         const originalContent = btn ? btn.innerHTML : '';
         if (btn) btn.innerHTML = '<i class="ph-bold ph-spinner animate-spin text-2xl"></i><span>Elaborazione...</span>';
 
-        // Salva e rimuovi temporaneamente la trasformazione scale
-        const originalTransform = container ? container.style.transform : '';
-        if (container) container.style.transform = 'scale(1)';
-
         // Piccolo delay per assicurarsi che tutto sia renderizzato
         await new Promise(resolve => setTimeout(resolve, 100));
 
         try {
-            // Usa dom-to-image toBlob
-            const scale = 3;
-            const blob = await domtoimage.toBlob(card, {
-                quality: 1.0,
-                width: 380 * scale,
-                height: 480 * scale,
-                style: {
-                    transform: `scale(${scale})`,
-                    transformOrigin: 'top left',
-                    width: '380px',
-                    height: '480px'
-                }
-            });
-            
+            const blob = await domtoimage.toBlob(card, ui._shareCardExportOptions());
+
             if (!blob) {
                 ui.showToast('❌ Errore nella generazione dell\'immagine');
-                if (btn) btn.innerHTML = originalContent;
                 return;
             }
-            
+
             const file = new File([blob], `EazyTrader_Trade.png`, { type: 'image/png' });
-            
+
             if (navigator.canShare && navigator.canShare({ files: [file] })) {
                 try {
                     await navigator.share({
@@ -6595,23 +6580,21 @@ const ui = {
                     console.error('Errore share nativo:', err);
                     // Se l'utente annulla, non mostrare errore
                     if (err.name !== 'AbortError') {
-                        ui.downloadShareCard(btn); // Fallback
+                        // Riusiamo l'immagine già generata invece di rigenerarla:
+                        // così il pulsante non resta bloccato su "Elaborazione...".
+                        ui._saveShareCardBlob(blob);
                     }
                 }
             } else {
                 // Fallback se web share non è supportato
-                ui.downloadShareCard(btn);
+                ui._saveShareCardBlob(blob);
                 ui.showToast('ℹ️ Condivisione nativa non supportata, immagine scaricata.');
             }
-            // Ripristina la trasformazione originale
-            if (container) container.style.transform = originalTransform;
-            if (btn) btn.innerHTML = originalContent;
-            
         } catch (e) {
             console.error(e);
             ui.showToast('❌ Errore durante la creazione dell\'immagine');
-            // Ripristina la trasformazione originale anche in caso di errore
-            if (container) container.style.transform = originalTransform;
+        } finally {
+            // Ripristina sempre il pulsante, qualunque strada abbia preso il flusso.
             if (btn) btn.innerHTML = originalContent;
         }
     },
@@ -6643,7 +6626,7 @@ const ui = {
         if (!shareModal) {
             shareModal = document.createElement('div');
             shareModal.id = 'modal-share';
-            shareModal.className = 'fixed inset-0 z-[110] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm transition-all duration-300 opacity-0 pointer-events-none';
+            shareModal.className = 'fixed inset-0 z-[110] hidden flex items-center justify-center overflow-y-auto p-4 bg-black/80 backdrop-blur-sm transition-all duration-300 opacity-0 pointer-events-none';
             document.body.appendChild(shareModal);
         }
 
@@ -6755,14 +6738,18 @@ const ui = {
             </div>
         `;
 
+        const cardViewport = ui._shareCardViewport();
+
         shareModal.innerHTML = `
             <div class="flex flex-col items-center gap-4 max-w-[95vw]">
                 <div class="relative p-2 bg-[var(--bg-card)] rounded-[32px] border border-[var(--glass-border)] shadow-2xl flex flex-col gap-4 items-center">
-                    <div id="share-card-container" class="rounded-[24px] overflow-hidden shadow-2xl" style="width: 380px; height: 480px; transform: scale(min(1, (window.innerWidth - 48)/380)); transform-origin: top center; background: ${isLightMode ? '#ffffff' : '#09090b'};">
-                        ${cardHtml}
+                    <div class="rounded-[24px] overflow-hidden shadow-2xl" style="width: ${cardViewport.width}px; height: ${cardViewport.height}px;">
+                        <div id="share-card-container" style="width: 380px; height: 480px; transform: scale(${cardViewport.scale}); transform-origin: top left; background: ${isLightMode ? '#ffffff' : '#09090b'};">
+                            ${cardHtml}
+                        </div>
                     </div>
-                    
-                    <div class="flex gap-4 w-full px-4 pb-2" style="margin-top: calc(480px * min(1, (window.innerWidth - 48)/380) - 480px);">
+
+                    <div class="flex gap-4 w-full px-4 pb-2">
                         <button onclick="ui.downloadShareCard(this)" class="flex-1 py-4 bg-[var(--input-bg)] hover:bg-[var(--accent-blue)]/20 text-[var(--accent-blue)] border border-[var(--glass-border)] hover:border-[var(--accent-blue)]/50 rounded-2xl font-bold flex flex-col items-center gap-2 transition-all">
                             <i class="ph-bold ph-download-simple text-2xl"></i>
                             <span>Salva</span>
