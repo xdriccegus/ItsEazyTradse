@@ -2863,343 +2863,415 @@ header .pointer-events-auto {
 }
 
 /* === PLAYBOOK === */
-/* Un solo colore d'accento, superfici neutre, bordi a filo di capello e una
-   scala di raggi/spaziature coerente: la pagina e le due finestre condividono
-   lo stesso linguaggio visivo. */
+/* Impostazione a indice: i setup sono righe di una libreria, non riquadri.
+   Superfici piatte, un solo accento, il colore solo dove porta informazione
+   (il win rate). Nessuna animazione oltre al .fade-in di pagina, che e' la
+   convenzione comune a tutte le schermate dell'app. */
 
-.pb-page,
+.pb,
 .pb-modal {
     --pb-accent: var(--accent-blue);
-    --pb-accent-soft: rgba(10, 132, 255, 0.45);
-    --pb-accent-faint: rgba(10, 132, 255, 0.12);
-    --pb-radius-lg: 18px;
-    --pb-radius-md: 14px;
-    --pb-radius-sm: 10px;
+    --pb-line: var(--glass-border);
+    --pb-hover: var(--card-hover);
+    --pb-r-lg: 20px;
+    --pb-r-md: 14px;
+    --pb-r-sm: 10px;
 }
 
-[data-theme="light"] .pb-page,
-[data-theme="light"] .pb-modal {
-    --pb-accent-soft: rgba(0, 122, 255, 0.4);
-    --pb-accent-faint: rgba(0, 122, 255, 0.1);
-}
-
-.pb-page {
+.pb {
     width: 100%;
-    max-width: 1180px;
+    max-width: 1080px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 26px;
 }
 
-/* --- Intestazione --- */
-.pb-header {
+/* ---------- Intestazione ---------- */
+
+.pb-hero {
     display: flex;
-    align-items: flex-end;
+    align-items: flex-start;
     justify-content: space-between;
-    gap: 20px;
+    gap: 24px;
     flex-wrap: wrap;
+    padding-bottom: 26px;
 }
 
-.pb-title {
-    font-size: clamp(26px, 4vw, 33px);
-    font-weight: 650;
-    letter-spacing: -0.025em;
-    line-height: 1.1;
+.pb-hero-title {
+    font-size: clamp(30px, 5vw, 40px);
+    font-weight: 660;
+    letter-spacing: -0.035em;
+    line-height: 1.05;
     color: var(--text-main);
 }
 
-.pb-subtitle {
-    margin-top: 7px;
-    font-size: 14px;
-    line-height: 1.4;
-    color: var(--text-muted);
-}
-
-/* --- Pulsanti --- */
-.pb-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    height: 40px;
-    padding: 0 18px;
-    border-radius: var(--pb-radius-sm);
-    border: 1px solid transparent;
-    font-size: 14px;
-    font-weight: 600;
-    white-space: nowrap;
-    cursor: pointer;
-    transition: background-color .16s ease, border-color .16s ease, color .16s ease, opacity .16s ease;
-}
-
-.pb-btn-primary {
-    background: var(--pb-accent);
-    color: #fff;
-}
-.pb-btn-primary:hover { opacity: .88; }
-
-.pb-btn-ghost {
-    background: transparent;
-    border-color: var(--glass-border);
-    color: var(--text-main);
-}
-.pb-btn-ghost:hover { background: var(--card-hover); }
-
-.pb-btn-danger {
-    background: transparent;
-    color: var(--accent-red);
-    padding: 0 14px;
-}
-.pb-btn-danger:hover { background: rgba(255, 69, 58, 0.1); }
-
-.pb-icon-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 34px;
-    height: 34px;
-    border-radius: var(--pb-radius-sm);
-    border: 1px solid var(--glass-border);
-    background: transparent;
-    color: var(--text-muted);
+.pb-hero-sub {
+    margin-top: 9px;
     font-size: 15px;
-    cursor: pointer;
-    transition: background-color .16s ease, color .16s ease, border-color .16s ease;
-}
-.pb-icon-btn:hover {
-    background: var(--card-hover);
-    color: var(--text-main);
+    line-height: 1.45;
+    color: var(--text-muted);
+    max-width: 46ch;
 }
 
-/* --- Riepilogo numerico --- */
-.pb-stats {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    background: var(--bg-card);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--pb-radius-lg);
-    overflow: hidden;
+/* ---------- Metriche in linea ---------- */
+
+.pb-metrics {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0 34px;
+    padding: 18px 0 24px;
+    border-top: 1px solid var(--pb-line);
 }
 
-.pb-stat {
-    padding: 17px 20px;
-    border-left: 1px solid var(--glass-border);
+.pb-metric {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
 }
-.pb-stat:first-child { border-left: 0; }
 
-.pb-stat-value {
-    display: block;
-    font-size: 23px;
-    font-weight: 620;
-    letter-spacing: -0.025em;
-    line-height: 1.15;
+.pb-metric-value {
+    font-size: 19px;
+    font-weight: 640;
+    letter-spacing: -0.02em;
     color: var(--text-main);
     font-variant-numeric: tabular-nums;
 }
 
-.pb-stat-label {
-    display: block;
-    margin-top: 3px;
-    font-size: 12.5px;
+.pb-metric-label {
+    font-size: 13.5px;
     color: var(--text-muted);
 }
 
-/* --- Griglia dei setup --- */
-.pb-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-    gap: 18px;
+/* ---------- Barra strumenti ---------- */
+
+.pb-toolbar { padding-bottom: 14px; }
+
+.pb-search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    max-width: 340px;
 }
 
-.pb-card {
-    display: flex;
-    flex-direction: column;
-    background: var(--bg-card);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--pb-radius-lg);
-    overflow: hidden;
-    cursor: pointer;
+.pb-search > i {
+    position: absolute;
+    left: 13px;
+    font-size: 15px;
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
+.pb-search input {
+    width: 100%;
+    height: 40px;
+    padding: 0 14px 0 37px;
+    border-radius: var(--pb-r-sm);
+    border: 1px solid var(--pb-line);
+    background: var(--input-bg);
+    color: var(--text-main);
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
     transition: border-color .16s ease;
 }
 
-.pb-card:hover { border-color: var(--pb-accent-soft); }
+.pb-search input::placeholder { color: var(--text-muted); }
+.pb-search input:focus { border-color: var(--pb-accent); }
 
-.pb-card-media {
-    position: relative;
-    aspect-ratio: 16 / 9;
+/* ---------- Elenco dei setup ---------- */
+
+.pb-list {
+    border: 1px solid var(--pb-line);
+    border-radius: var(--pb-r-lg);
+    overflow: hidden;
+    background: var(--bg-card);
+}
+
+.pb-row {
+    display: grid;
+    grid-template-columns: 60px minmax(0, 1fr) 128px 36px;
+    grid-template-areas: "thumb main wr action";
+    align-items: center;
+    gap: 0 18px;
+    padding: 16px 18px;
+    border-top: 1px solid var(--pb-line);
+    cursor: pointer;
+    transition: background-color .14s ease;
+}
+
+.pb-row:first-child { border-top: 0; }
+.pb-row:hover { background: var(--pb-hover); }
+
+/* Miniatura o monogramma */
+
+.pb-thumb {
+    grid-area: thumb;
+    width: 60px;
+    height: 60px;
+    border-radius: var(--pb-r-md);
+    border: 1px solid var(--pb-line);
     background-color: var(--input-bg);
     background-size: cover;
     background-position: center;
-    border-bottom: 1px solid var(--glass-border);
-}
-
-.pb-card-media--empty {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 28px;
-    color: var(--text-muted);
-    opacity: .3;
+    overflow: hidden;
 }
 
-.pb-chip {
+.pb-thumb-letter {
+    font-size: 20px;
+    font-weight: 640;
+    letter-spacing: -0.02em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.pb-thumb-badge {
     position: absolute;
-    top: 10px;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    height: 24px;
-    padding: 0 9px;
-    border-radius: 999px;
-    background: rgba(0, 0, 0, 0.62);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    color: #fff;
-    font-size: 11.5px;
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
-}
-.pb-chip--wr { right: 10px; }
-.pb-chip--count { left: 10px; }
-
-/* Senza immagine di copertina il badge non deve sembrare un blocco scuro
-   appoggiato su una superficie chiara: prende lo stile della scheda. */
-.pb-card-media--empty .pb-chip {
-    background: var(--bg-card);
-    border: 1px solid var(--glass-border);
-    color: var(--text-muted);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
+    inset: auto 0 0 auto;
 }
 
-.pb-card-body {
-    flex: 1;
-    padding: 15px 17px 0;
+/* Colonna centrale */
+
+.pb-main {
+    grid-area: main;
     min-width: 0;
 }
 
-.pb-card-title {
+.pb-name {
     font-size: 15.5px;
     font-weight: 620;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.012em;
     line-height: 1.35;
     color: var(--text-main);
     overflow-wrap: anywhere;
 }
 
-.pb-card-desc {
-    margin-top: 6px;
+.pb-desc {
+    margin-top: 4px;
     font-size: 13.5px;
-    line-height: 1.55;
+    line-height: 1.5;
     color: var(--text-muted);
     display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
 
-.pb-card-foot {
-    margin-top: 15px;
-    padding: 11px 13px 11px 17px;
-    border-top: 1px solid var(--glass-border);
+.pb-tags {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-}
-
-.pb-meta {
-    display: flex;
-    align-items: center;
-    gap: 14px;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    margin-top: 8px;
     font-size: 12.5px;
     color: var(--text-muted);
-    min-width: 0;
+    font-variant-numeric: tabular-nums;
 }
-.pb-meta > span {
+
+.pb-tags > span {
     display: inline-flex;
     align-items: center;
     gap: 6px;
     white-space: nowrap;
 }
 
-/* --- Stato vuoto --- */
+/* Win rate con indicatore */
+
+.pb-wr {
+    grid-area: wr;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    align-items: flex-end;
+}
+
+.pb-wr-value {
+    font-size: 14px;
+    font-weight: 640;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+}
+
+.pb-wr-none {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.pb-wr-track {
+    width: 100%;
+    height: 4px;
+    border-radius: 999px;
+    background: var(--pb-hover);
+    overflow: hidden;
+}
+
+.pb-wr-fill {
+    height: 100%;
+    border-radius: 999px;
+}
+
+/* Azione di riga */
+
+.pb-row-action {
+    grid-area: action;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: var(--pb-r-sm);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color .14s ease, color .14s ease;
+}
+
+.pb-row-action:hover {
+    background: var(--input-bg);
+    color: var(--text-main);
+}
+
+/* Nessun risultato dalla ricerca */
+
+.pb-noresult {
+    padding: 42px 18px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+/* ---------- Stato vuoto ---------- */
+
 .pb-empty {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding: 72px 24px;
-    border: 1px dashed var(--glass-border);
-    border-radius: var(--pb-radius-lg);
+    padding: 76px 24px;
+    border: 1px solid var(--pb-line);
+    border-radius: var(--pb-r-lg);
+    background: var(--bg-card);
 }
 
-.pb-empty-icon {
+.pb-empty-mark {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
-    border-radius: var(--pb-radius-md);
-    border: 1px solid var(--glass-border);
+    width: 54px;
+    height: 54px;
+    border-radius: var(--pb-r-md);
+    border: 1px solid var(--pb-line);
     color: var(--text-muted);
     font-size: 24px;
-    margin-bottom: 20px;
+    margin-bottom: 22px;
 }
 
-.pb-empty h3 {
-    font-size: 17px;
-    font-weight: 620;
-    letter-spacing: -0.01em;
+.pb-empty h2 {
+    font-size: 19px;
+    font-weight: 640;
+    letter-spacing: -0.02em;
     color: var(--text-main);
 }
 
 .pb-empty p {
-    margin: 8px 0 24px;
-    max-width: 42ch;
-    font-size: 14px;
+    margin: 10px 0 26px;
+    max-width: 44ch;
+    font-size: 14.5px;
     line-height: 1.6;
     color: var(--text-muted);
 }
 
-/* --- Finestre --- */
+/* ---------- Pulsanti condivisi ---------- */
+
+.pb-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 42px;
+    padding: 0 20px;
+    border-radius: var(--pb-r-sm);
+    border: 1px solid transparent;
+    font-size: 14.5px;
+    font-weight: 600;
+    font-family: inherit;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color .16s ease, border-color .16s ease, color .16s ease, opacity .16s ease;
+}
+
+.pb-btn-primary { background: var(--pb-accent); color: #fff; }
+.pb-btn-primary:hover { opacity: .88; }
+
+.pb-btn-ghost {
+    background: transparent;
+    border-color: var(--pb-line);
+    color: var(--text-main);
+}
+.pb-btn-ghost:hover { background: var(--pb-hover); }
+
+.pb-btn-danger { background: transparent; color: var(--accent-red); padding: 0 14px; }
+.pb-btn-danger:hover { background: rgba(255, 69, 58, 0.1); }
+
+.pb-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--pb-r-sm);
+    border: 1px solid var(--pb-line);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color .16s ease, color .16s ease;
+}
+.pb-icon-btn:hover { background: var(--pb-hover); color: var(--text-main); }
+
+/* ---------- Finestre ---------- */
+
 .pb-modal {
     display: flex;
     flex-direction: column;
-    width: min(92vw, 760px);
+    width: min(92vw, 720px);
     max-height: 88dvh;
     background: var(--modal-bg);
-    border: 1px solid var(--glass-border);
-    border-radius: 20px;
+    border: 1px solid var(--pb-line);
+    border-radius: 22px;
     box-shadow: var(--shadow-xl);
     overflow: hidden;
 }
-.pb-modal--wide { width: min(94vw, 860px); }
+.pb-modal--wide { width: min(94vw, 840px); }
 
 .pb-modal-head {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     gap: 16px;
-    padding: 19px 22px;
-    border-bottom: 1px solid var(--glass-border);
+    padding: 22px 24px 18px;
+    border-bottom: 1px solid var(--pb-line);
     flex-shrink: 0;
 }
 
-.pb-modal-heading {
-    font-size: 17px;
-    font-weight: 620;
-    letter-spacing: -0.015em;
-    line-height: 1.3;
+.pb-modal-title {
+    font-size: 20px;
+    font-weight: 640;
+    letter-spacing: -0.025em;
+    line-height: 1.25;
     color: var(--text-main);
     overflow-wrap: anywhere;
 }
 
 .pb-modal-sub {
-    margin-top: 4px;
-    font-size: 13px;
+    margin-top: 6px;
+    font-size: 13.5px;
     color: var(--text-muted);
 }
 
@@ -3207,10 +3279,10 @@ header .pointer-events-auto {
     flex: 1;
     min-height: 0;
     overflow-y: auto;
-    padding: 22px;
+    padding: 24px;
     display: flex;
     flex-direction: column;
-    gap: 26px;
+    gap: 28px;
 }
 
 .pb-modal-foot {
@@ -3218,97 +3290,127 @@ header .pointer-events-auto {
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding: 15px 22px;
-    border-top: 1px solid var(--glass-border);
+    padding: 16px 24px;
+    border-top: 1px solid var(--pb-line);
     flex-shrink: 0;
 }
 
-.pb-section-label {
+.pb-label {
     display: block;
-    margin-bottom: 11px;
+    margin-bottom: 12px;
     font-size: 12px;
-    font-weight: 620;
-    letter-spacing: 0.05em;
+    font-weight: 640;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--text-muted);
 }
 
-.pb-hero {
+.pb-cover {
     width: 100%;
-    max-height: 300px;
+    max-height: 290px;
     object-fit: cover;
     display: block;
-    border-radius: var(--pb-radius-md);
-    border: 1px solid var(--glass-border);
+    border-radius: var(--pb-r-md);
+    border: 1px solid var(--pb-line);
     cursor: pointer;
 }
 
-.pb-prose {
-    font-size: 14.5px;
+.pb-text {
+    font-size: 15px;
     line-height: 1.65;
     color: var(--text-main);
     white-space: pre-wrap;
     overflow-wrap: anywhere;
 }
 
-/* Elenco regole (sola lettura) */
-.pb-rules {
-    border: 1px solid var(--glass-border);
-    border-radius: var(--pb-radius-md);
+/* Riepilogo win rate dentro la finestra */
+
+.pb-wr-panel {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 18px;
+    border: 1px solid var(--pb-line);
+    border-radius: var(--pb-r-md);
+}
+
+.pb-wr-panel-value {
+    font-size: 26px;
+    font-weight: 660;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+}
+
+.pb-wr-panel-body { flex: 1; min-width: 0; }
+
+.pb-wr-panel-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 9px;
+}
+
+/* Checklist */
+
+.pb-checks {
+    border: 1px solid var(--pb-line);
+    border-radius: var(--pb-r-md);
     overflow: hidden;
 }
 
-.pb-rule {
+.pb-check {
     display: flex;
     align-items: baseline;
     gap: 14px;
     padding: 13px 16px;
-    border-top: 1px solid var(--glass-border);
-    font-size: 14px;
+    border-top: 1px solid var(--pb-line);
+    font-size: 14.5px;
     line-height: 1.5;
     color: var(--text-main);
     overflow-wrap: anywhere;
 }
-.pb-rule:first-child { border-top: 0; }
+.pb-check:first-child { border-top: 0; }
 
-.pb-rule-num {
+.pb-check-num {
     flex-shrink: 0;
-    min-width: 18px;
+    min-width: 17px;
     font-size: 12.5px;
-    font-weight: 620;
+    font-weight: 640;
     font-variant-numeric: tabular-nums;
     color: var(--text-muted);
 }
 
 /* Galleria */
+
 .pb-gallery {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
     gap: 12px;
 }
 
-.pb-thumb {
+.pb-shot {
     aspect-ratio: 16 / 10;
-    border-radius: var(--pb-radius-sm);
-    border: 1px solid var(--glass-border);
+    border-radius: var(--pb-r-sm);
+    border: 1px solid var(--pb-line);
     background-size: cover;
     background-position: center;
     cursor: pointer;
     transition: border-color .16s ease;
 }
-.pb-thumb:hover { border-color: var(--pb-accent-soft); }
+.pb-shot:hover { border-color: var(--pb-accent); }
 
-/* --- Form --- */
-.pb-form-row {
+/* ---------- Form ---------- */
+
+.pb-grid-2 {
     display: grid;
-    grid-template-columns: 1fr 132px;
-    gap: 14px;
+    grid-template-columns: 1fr 136px;
+    gap: 16px;
 }
 
 .pb-field-label {
     display: block;
-    margin-bottom: 7px;
-    font-size: 13px;
+    margin-bottom: 8px;
+    font-size: 13.5px;
     font-weight: 600;
     color: var(--text-main);
 }
@@ -3317,74 +3419,66 @@ header .pointer-events-auto {
 .pb-textarea {
     width: 100%;
     background: var(--input-bg);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--pb-radius-sm);
-    padding: 10px 13px;
-    font-size: 14px;
+    border: 1px solid var(--pb-line);
+    border-radius: var(--pb-r-sm);
+    padding: 11px 13px;
+    font-size: 14.5px;
     font-family: inherit;
     color: var(--text-main);
     outline: none;
-    transition: border-color .16s ease, box-shadow .16s ease;
+    transition: border-color .16s ease;
 }
 
 .pb-input::placeholder,
 .pb-textarea::placeholder { color: var(--text-muted); }
 
 .pb-input:focus,
-.pb-textarea:focus {
-    border-color: var(--pb-accent);
-    box-shadow: 0 0 0 3px var(--pb-accent-faint);
-}
+.pb-textarea:focus { border-color: var(--pb-accent); }
 
 .pb-textarea {
-    min-height: 96px;
+    min-height: 104px;
     resize: vertical;
     line-height: 1.6;
 }
 
-.pb-field-hint {
-    margin-top: 7px;
+.pb-hint {
+    margin-top: 8px;
     font-size: 12.5px;
     color: var(--text-muted);
 }
 
-/* Editor delle regole */
-.pb-rule-edit {
+.pb-rule-row {
     display: flex;
     align-items: center;
     gap: 10px;
 }
-.pb-rule-edit .pb-input { flex: 1; min-width: 0; }
+.pb-rule-row .pb-input { flex: 1; min-width: 0; }
 
-.pb-rule-remove {
+.pb-rule-del {
     flex-shrink: 0;
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     border: 0;
-    border-radius: var(--pb-radius-sm);
+    border-radius: var(--pb-r-sm);
     background: transparent;
     color: var(--text-muted);
     font-size: 15px;
     cursor: pointer;
     transition: background-color .16s ease, color .16s ease;
 }
-.pb-rule-remove:hover {
-    background: rgba(255, 69, 58, 0.1);
-    color: var(--accent-red);
-}
+.pb-rule-del:hover { background: rgba(255, 69, 58, 0.1); color: var(--accent-red); }
 
-/* Area di caricamento immagini */
 .pb-drop {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 120px;
+    min-height: 118px;
     padding: 22px;
-    border: 1px dashed var(--glass-border);
-    border-radius: var(--pb-radius-md);
+    border: 1px dashed var(--pb-line);
+    border-radius: var(--pb-r-md);
     cursor: pointer;
     text-align: center;
     transition: border-color .16s ease, background-color .16s ease;
@@ -3392,43 +3486,34 @@ header .pointer-events-auto {
 .pb-drop:hover,
 .pb-drop.is-dragging {
     border-color: var(--pb-accent);
-    background: var(--pb-accent-faint);
+    background: var(--pb-hover);
 }
 
-.pb-drop-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-main);
-}
+.pb-drop-title { font-size: 14.5px; font-weight: 600; color: var(--text-main); }
+.pb-drop-hint { margin-top: 5px; font-size: 12.5px; color: var(--text-muted); }
 
-.pb-drop-hint {
-    margin-top: 4px;
-    font-size: 12.5px;
-    color: var(--text-muted);
-}
-
-.pb-preview {
+.pb-shots {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
     width: 100%;
 }
 
-.pb-preview-item {
+.pb-shot-item {
     position: relative;
-    width: 86px;
-    height: 86px;
-    border-radius: var(--pb-radius-sm);
-    border: 1px solid var(--glass-border);
+    width: 88px;
+    height: 88px;
+    border-radius: var(--pb-r-sm);
+    border: 1px solid var(--pb-line);
     background-size: cover;
     background-position: center;
     cursor: pointer;
 }
 
-.pb-preview-remove {
+.pb-shot-del {
     position: absolute;
-    top: -6px;
-    right: -6px;
+    top: -7px;
+    right: -7px;
     width: 22px;
     height: 22px;
     display: flex;
@@ -3442,29 +3527,43 @@ header .pointer-events-auto {
     cursor: pointer;
 }
 
-@media (max-width: 640px) {
-    .pb-page { gap: 22px; }
+/* ---------- Adattamento a schermi stretti ---------- */
 
-    .pb-header { align-items: stretch; }
-    .pb-header .pb-btn { width: 100%; }
+@media (max-width: 720px) {
+    .pb-hero { padding-bottom: 22px; }
+    .pb-hero .pb-btn { width: 100%; }
 
-    .pb-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .pb-stat:nth-child(odd) { border-left: 0; }
-    .pb-stat:nth-child(n + 3) { border-top: 1px solid var(--glass-border); }
+    .pb-metrics { gap: 0 26px; padding: 16px 0 20px; }
 
-    .pb-grid { grid-template-columns: 1fr; }
+    .pb-row {
+        grid-template-columns: 52px minmax(0, 1fr) 36px;
+        grid-template-areas:
+            "thumb main   action"
+            "thumb wr     wr";
+        align-items: start;
+        gap: 10px 14px;
+        padding: 15px 15px;
+    }
 
-    .pb-modal { width: 100%; max-height: 92dvh; border-radius: 18px; }
-    .pb-modal-head,
-    .pb-modal-foot { padding: 15px 17px; }
-    .pb-modal-body { padding: 18px 17px; gap: 22px; }
+    .pb-thumb { width: 52px; height: 52px; }
 
-    .pb-form-row { grid-template-columns: 1fr; }
+    .pb-wr {
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+    }
+    .pb-wr-track { width: 74px; }
 
-    .pb-modal-foot { flex-wrap: wrap; }
+    .pb-row-action { align-self: start; }
+
+    .pb-modal { width: 100%; max-height: 92dvh; border-radius: 20px; }
+    .pb-modal-head { padding: 18px 17px 15px; }
+    .pb-modal-body { padding: 19px 17px; gap: 24px; }
+    .pb-modal-foot { padding: 15px 17px; flex-wrap: wrap; }
     .pb-modal-foot .pb-btn { flex: 1; }
-}
 
+    .pb-grid-2 { grid-template-columns: 1fr; }
+}
 
 /* Loading spinner animation */
 @keyframes spin {
