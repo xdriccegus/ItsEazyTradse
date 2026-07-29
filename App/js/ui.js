@@ -33,7 +33,7 @@ const ui = {
     },
 
     getStartupPage() {
-        const allowedPages = new Set(['dashboard', 'journal', 'review', 'todo', 'news', 'system', 'profile', 'accounts', 'settings', 'paywall', 'drafts']);
+        const allowedPages = new Set(['dashboard', 'journal', 'analytics', 'review', 'todo', 'news', 'playbook', 'system', 'profile', 'accounts', 'settings', 'paywall', 'drafts']);
         const hashPage = (window.location.hash || '').replace('#', '').trim();
         const storedPage = (localStorage.getItem('eazytrader_last_page') || '').trim();
         const candidate = hashPage || storedPage || 'dashboard';
@@ -46,7 +46,7 @@ const ui = {
     refreshViewSilently() {
         // 'drafts' condivide il render del journal: rigenerarlo dal router farebbe
         // saltare l'utente sulla pagina sbagliata.
-        const renderers = { dashboard: 'dashboard', journal: 'journal', drafts: 'journal', accounts: 'accounts' };
+        const renderers = { dashboard: 'dashboard', journal: 'journal', drafts: 'journal', accounts: 'accounts', analytics: 'analytics' };
         const renderer = renderers[router.currentPage];
 
         if (!renderer || typeof ui[renderer] !== 'function' || !ui.container) return;
@@ -5484,7 +5484,7 @@ const ui = {
                                             ${DataStore.data.accounts.map(a => `
                                                 <label class="flex items-center justify-between p-3 rounded-xl bg-white/5 cursor-pointer group border border-transparent has-[:checked]:bg-blue-500/10 has-[:checked]:border-blue-500/50">
                                                     <div class="flex items-center gap-3 flex-1 min-w-0">
-                                                        <input type="checkbox" name="t-accounts" value="${a.id}" ${t.accountId == a.id ? 'checked' : ''} class="sr-only pointer-events-none focus:outline-none focus-visible:outline-none" tabindex="-1">
+                                                        <input type="checkbox" name="t-accounts" value="${a.id}" ${t.accountId == a.id ? 'checked' : ''} onchange="ui.recalcTradeRisk()" class="sr-only pointer-events-none focus:outline-none focus-visible:outline-none" tabindex="-1">
                                                         <div class="flex-1 min-w-0">
                                                             <p class="text-sm font-bold text-white preserve-white truncate">${a.name}</p>
                                                             <p class="text-[10px] text-[var(--text-muted)]">${a.type || 'Account'} • ${ui.formatCurrency(a.balance || 0)}</p>
@@ -5527,6 +5527,55 @@ const ui = {
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+
+                                <!-- Gestione del Rischio -->
+                                <!-- Sfondo piatto e non gradiente: in tema chiaro la regola
+                                     ".bg-gradient-to-br .preserve-white" forzerebbe il testo a bianco. -->
+                                <div class="bg-amber-500/[0.06] border border-amber-500/20 rounded-2xl p-5 space-y-4">
+                                    <div class="flex items-center justify-between gap-3 flex-wrap">
+                                        <label class="text-[10px] font-bold uppercase tracking-widest text-amber-400 flex items-center gap-2">
+                                            <i class="ph-bold ph-shield-check text-sm"></i>
+                                            Gestione del Rischio
+                                        </label>
+                                        <span class="text-[10px] text-[var(--text-muted)]">Facoltativo, ma sblocca R reali e size suggerita</span>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
+                                        <div class="bg-white/5 border border-white/10 rounded-xl px-3 py-2">
+                                            <label class="block text-[9px] font-bold uppercase tracking-widest text-[var(--text-muted)] mb-1">Entry</label>
+                                            <input type="number" id="t-entry" value="${t.entry || ''}" step="any" oninput="ui.recalcTradeRisk()" class="w-full bg-transparent border-none outline-none text-sm font-bold text-white preserve-white placeholder-white/20" placeholder="0">
+                                        </div>
+                                        <div class="bg-white/5 border border-white/10 rounded-xl px-3 py-2">
+                                            <label class="block text-[9px] font-bold uppercase tracking-widest text-red-400/80 mb-1">Stop Loss</label>
+                                            <input type="number" id="t-stop" value="${t.stopLoss || ''}" step="any" oninput="ui.recalcTradeRisk()" class="w-full bg-transparent border-none outline-none text-sm font-bold text-white preserve-white placeholder-white/20" placeholder="0">
+                                        </div>
+                                        <div class="bg-white/5 border border-white/10 rounded-xl px-3 py-2">
+                                            <label class="block text-[9px] font-bold uppercase tracking-widest text-green-400/80 mb-1">Take Profit</label>
+                                            <input type="number" id="t-target" value="${t.takeProfit || ''}" step="any" oninput="ui.recalcTradeRisk()" class="w-full bg-transparent border-none outline-none text-sm font-bold text-white preserve-white placeholder-white/20" placeholder="0">
+                                        </div>
+                                        <div class="bg-white/5 border border-white/10 rounded-xl px-3 py-2">
+                                            <label class="block text-[9px] font-bold uppercase tracking-widest text-[var(--text-muted)] mb-1">Size</label>
+                                            <input type="number" id="t-size" value="${t.size || ''}" step="any" oninput="ui.recalcTradeRisk()" class="w-full bg-transparent border-none outline-none text-sm font-bold text-white preserve-white placeholder-white/20" placeholder="0">
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
+                                        <div class="bg-white/5 border border-white/10 rounded-xl px-3 py-2">
+                                            <label class="block text-[9px] font-bold uppercase tracking-widest text-[var(--text-muted)] mb-1">Rischio %</label>
+                                            <input type="number" id="t-risk-pct" value="${t.riskPercent || ''}" step="0.01" oninput="ui.syncRiskFromPercent()" class="w-full bg-transparent border-none outline-none text-sm font-bold text-white preserve-white placeholder-white/20" placeholder="1">
+                                        </div>
+                                        <div class="bg-white/5 border border-white/10 rounded-xl px-3 py-2">
+                                            <label class="block text-[9px] font-bold uppercase tracking-widest text-[var(--text-muted)] mb-1">Rischio $</label>
+                                            <input type="number" id="t-risk-amt" value="${t.riskAmount || ''}" step="0.01" oninput="ui.syncRiskFromAmount()" class="w-full bg-transparent border-none outline-none text-sm font-bold text-white preserve-white placeholder-white/20" placeholder="0">
+                                        </div>
+                                        <div class="bg-white/5 border border-white/10 rounded-xl px-3 py-2 col-span-2 md:col-span-1" title="Quanto vale 1 punto di prezzo per 1 unita' di size (1 lotto, 1 contratto, 1 azione...). Dipende dallo strumento e dal broker.">
+                                            <label class="block text-[9px] font-bold uppercase tracking-widest text-[var(--text-muted)] mb-1">Valore per punto</label>
+                                            <input type="number" id="t-point-value" value="${t.valuePerPoint || ''}" step="any" oninput="ui.recalcTradeRisk()" class="w-full bg-transparent border-none outline-none text-sm font-bold text-white preserve-white placeholder-white/20" placeholder="1">
+                                        </div>
+                                    </div>
+
+                                    <div id="risk-recap" class="text-xs font-semibold text-[var(--text-muted)] leading-relaxed"></div>
                                 </div>
 
                                 <!-- Notes Section -->
@@ -5623,6 +5672,7 @@ const ui = {
         ui.setupDragDrop();
         ui.renderTempImages();
         ui.setupAudioRecordButtons();
+        ui.recalcTradeRisk();
 
         // Renderizza audio player se esiste audio
         if (t && t.audioNote) {
@@ -5652,6 +5702,89 @@ const ui = {
             pnlInput.classList.add('opacity-50', 'cursor-not-allowed');
         }
     },
+    // === CALCOLATORE DI RISCHIO (modal trade) ===
+
+    // Il rischio in percentuale ha senso solo rispetto a un saldo: si usa quello
+    // del primo conto selezionato, che e' anche quello su cui il trade viene
+    // registrato quando se ne sceglie piu' di uno.
+    selectedTradeAccountBalance() {
+        const checked = document.querySelector('input[name="t-accounts"]:checked');
+        if (!checked) return 0;
+        const account = DataStore.data.accounts.find(a => a.id == checked.value);
+        return account ? (parseFloat(account.balance) || 0) : 0;
+    },
+
+    syncRiskFromPercent() {
+        const balance = ui.selectedTradeAccountBalance();
+        const pct = parseFloat(document.getElementById('t-risk-pct')?.value);
+        const amountEl = document.getElementById('t-risk-amt');
+
+        if (amountEl && balance > 0 && !isNaN(pct)) {
+            amountEl.value = (balance * pct / 100).toFixed(2);
+        }
+        ui.recalcTradeRisk();
+    },
+
+    syncRiskFromAmount() {
+        const balance = ui.selectedTradeAccountBalance();
+        const amount = parseFloat(document.getElementById('t-risk-amt')?.value);
+        const pctEl = document.getElementById('t-risk-pct');
+
+        if (pctEl && balance > 0 && !isNaN(amount)) {
+            pctEl.value = (amount / balance * 100).toFixed(2);
+        }
+        ui.recalcTradeRisk();
+    },
+
+    recalcTradeRisk() {
+        const recap = document.getElementById('risk-recap');
+        if (!recap) return;
+
+        const num = (id) => {
+            const value = parseFloat(document.getElementById(id)?.value);
+            return isNaN(value) ? null : value;
+        };
+
+        const entry = num('t-entry');
+        const stop = num('t-stop');
+        const target = num('t-target');
+        const riskAmount = num('t-risk-amt');
+        const pointValue = num('t-point-value') || 1;
+        const balance = ui.selectedTradeAccountBalance();
+        const parts = [];
+
+        // Distanza dallo stop: e' il rischio per unita' di size.
+        const distance = entry !== null && stop !== null ? Math.abs(entry - stop) : null;
+
+        if (riskAmount !== null && riskAmount > 0) {
+            const pct = balance > 0 ? ` (${(riskAmount / balance * 100).toFixed(2)}% del conto)` : '';
+            parts.push(`Rischio <b class="text-red-400">${ui.formatCurrency(riskAmount)}</b>${pct}`);
+        }
+
+        if (distance !== null && distance > 0) {
+            if (target !== null) {
+                const rr = Math.abs(target - entry) / distance;
+                parts.push(`R:R potenziale <b class="text-blue-400">${rr.toFixed(2)}</b>`);
+
+                // Non sovrascriviamo un R:R gia' scritto a mano.
+                const rrEl = document.getElementById('t-rr');
+                if (rrEl && !rrEl.value.trim()) rrEl.value = rr.toFixed(2);
+            }
+
+            if (riskAmount !== null && riskAmount > 0 && pointValue > 0) {
+                const size = riskAmount / (distance * pointValue);
+                const shown = size.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: size < 1 ? 3 : 2 });
+                parts.push(`Size suggerita <b class="text-amber-400">${shown}</b>`);
+            }
+        } else if (entry !== null && stop !== null) {
+            parts.push('<span class="text-red-400">Entry e stop coincidono: distanza nulla.</span>');
+        }
+
+        recap.innerHTML = parts.length
+            ? parts.join(' <span class="opacity-30">·</span> ')
+            : '<span class="opacity-60">Inserisci entry, stop e rischio per vedere size suggerita e R:R.</span>';
+    },
+
     saveTrade(isDraft) { ui.processSaveTrade(isDraft); },
     processSaveTrade(isDraft) {
         const idEl = document.getElementById('t-id');
@@ -5690,6 +5823,21 @@ const ui = {
         const improvements = document.getElementById('t-improvements')?.value?.trim() || '';
         const timeframe = document.getElementById('t-timeframe')?.value || '';
 
+        // Campi di rischio: facoltativi, salvati solo se compilati con un numero.
+        const riskNumber = (id) => {
+            const value = parseFloat(document.getElementById(id)?.value);
+            return isNaN(value) ? null : value;
+        };
+        const risk = {
+            entry: riskNumber('t-entry'),
+            stopLoss: riskNumber('t-stop'),
+            takeProfit: riskNumber('t-target'),
+            size: riskNumber('t-size'),
+            riskAmount: riskNumber('t-risk-amt'),
+            riskPercent: riskNumber('t-risk-pct'),
+            valuePerPoint: riskNumber('t-point-value')
+        };
+
         if (!asset) {
             ui.showToast('⚠️ Inserisci un asset');
             return;
@@ -5726,7 +5874,8 @@ const ui = {
                 images: ui.tempImages || [],
                 timeframe: timeframe,
                 accountId: selectedAccountIds[0], // Use first selected account for edit
-                audioNote: audioData
+                audioNote: audioData,
+                ...risk
             };
             DataStore.addTrade(trade);
         } else {
@@ -5753,7 +5902,8 @@ const ui = {
                     timeframe: timeframe,
                     accountId: accountId,
                     audioNote: audioData,
-                    linkedTradeId: masterTradeId // Link all copies to master trade
+                    linkedTradeId: masterTradeId, // Link all copies to master trade
+                    ...risk
                 };
                 DataStore.addTrade(trade);
             });
@@ -5804,6 +5954,51 @@ const ui = {
                 ui.showToast('❌ Errore durante l\'eliminazione');
             }
         }
+    },
+
+    // Riquadro rischio del dettaglio trade: compare solo se il trade porta
+    // davvero questi dati, cosi' i trade vecchi restano puliti.
+    tradeRiskMarkup(t) {
+        // Niente 'preserve-white' qui: la card del dettaglio e' un gradiente e in
+        // tema chiaro forzerebbe il testo a bianco su fondo bianco.
+        const cell = (label, value, cls = 'text-[var(--text-main)]') => `
+            <div class="bg-white/5 border border-white/10 rounded-xl p-3">
+                <p class="text-[10px] font-bold uppercase text-[var(--text-muted)] mb-1">${label}</p>
+                <p class="text-sm font-bold ${cls}">${value}</p>
+            </div>`;
+
+        const num = (value) => {
+            const parsed = parseFloat(value);
+            return isNaN(parsed) ? null : parsed;
+        };
+
+        const entry = num(t.entry), stop = num(t.stopLoss), target = num(t.takeProfit);
+        const size = num(t.size), riskAmount = num(t.riskAmount), riskPercent = num(t.riskPercent);
+
+        if (entry === null && stop === null && target === null && size === null && riskAmount === null) return '';
+
+        const cells = [];
+        if (entry !== null) cells.push(cell('Entry', entry));
+        if (stop !== null) cells.push(cell('Stop Loss', stop, 'text-red-400'));
+        if (target !== null) cells.push(cell('Take Profit', target, 'text-green-400'));
+        if (size !== null) cells.push(cell('Size', size));
+        if (riskAmount !== null) {
+            const pct = riskPercent !== null ? ` · ${riskPercent}%` : '';
+            cells.push(cell('Rischio', `${ui.formatCurrency(riskAmount)}${pct}`, 'text-amber-400'));
+        }
+        if (riskAmount !== null && riskAmount > 0) {
+            const r = (parseFloat(t.pnl) || 0) / riskAmount;
+            cells.push(cell('Risultato', `${r >= 0 ? '+' : ''}${r.toFixed(2)}R`, r >= 0 ? 'text-green-400' : 'text-red-400'));
+        }
+
+        return `
+        <div class="mb-6">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] flex items-center gap-2 mb-3">
+                <i class="ph-bold ph-shield-check"></i>
+                Gestione del Rischio
+            </h4>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-3">${cells.join('')}</div>
+        </div>`;
     },
 
     // NEW HELPER: Renders the *entire* detail modal content string
@@ -5931,6 +6126,9 @@ const ui = {
                             <p class="text-sm font-bold text-white preserve-white truncate">${account}</p>
                         </div>
                     </div>
+
+                    <!-- Gestione del Rischio -->
+                    ${ui.tradeRiskMarkup(t)}
 
                     <!-- Notes Section -->
                     ${t.notes ? `
