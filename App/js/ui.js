@@ -8587,8 +8587,8 @@ const ui = {
         return (setup.images || []).length;
     },
 
-    // Colore del win rate: unica eccezione al monocromatico, perché qui il
-    // colore porta informazione.
+    // Il colore e' l'unica concessione cromatica della pagina, perche' qui
+    // porta informazione: dice a colpo d'occhio come rende un setup.
     setupWinRateColor(winRate) {
         const n = parseFloat(winRate);
         if (isNaN(n)) return null;
@@ -8599,27 +8599,24 @@ const ui = {
 
     playbook() {
         if (!ui.container) return;
-        const setups = DataStore.data.playbook || [];
 
+        const setups = DataStore.data.playbook || [];
         const totalRules = setups.reduce((acc, s) => acc + ui.countSetupRules(s), 0);
         const totalImages = setups.reduce((acc, s) => acc + ui.countSetupImages(s), 0);
         const rated = setups.filter(s => !isNaN(parseFloat(s.winRate)));
         const avgWr = rated.length
-            ? (rated.reduce((acc, s) => acc + parseFloat(s.winRate), 0) / rated.length).toFixed(0)
+            ? Math.round(rated.reduce((acc, s) => acc + parseFloat(s.winRate), 0) / rated.length)
             : null;
 
         const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
-        const subtitle = setups.length
-            ? `${plural(setups.length, 'setup', 'setup')} · ${plural(totalRules, 'regola', 'regole')} · ${plural(totalImages, 'esempio', 'esempi')}`
-            : 'Le tue strategie operative, documentate in un unico posto.';
 
         ui.container.innerHTML = `
-        <div class="pb-page fade-in">
+        <div class="pb fade-in">
 
-            <header class="pb-header">
+            <header class="pb-hero">
                 <div class="min-w-0">
-                    <h1 class="pb-title">Playbook</h1>
-                    <p class="pb-subtitle">${subtitle}</p>
+                    <h1 class="pb-hero-title">Playbook</h1>
+                    <p class="pb-hero-sub">La libreria delle tue strategie: cosa deve essere vero prima di entrare a mercato.</p>
                 </div>
                 <button onclick="ui.openSetupModal()" class="pb-btn pb-btn-primary preserve-white">
                     <i class="ph-bold ph-plus"></i>
@@ -8628,71 +8625,113 @@ const ui = {
             </header>
 
             ${setups.length ? `
-            <section class="pb-stats">
-                <div class="pb-stat">
-                    <span class="pb-stat-value">${setups.length}</span>
-                    <span class="pb-stat-label">Setup</span>
+            <div class="pb-metrics">
+                <div class="pb-metric">
+                    <span class="pb-metric-value">${setups.length}</span>
+                    <span class="pb-metric-label">${setups.length === 1 ? 'setup' : 'setup'}</span>
                 </div>
-                <div class="pb-stat">
-                    <span class="pb-stat-value">${totalRules}</span>
-                    <span class="pb-stat-label">Regole</span>
+                <div class="pb-metric">
+                    <span class="pb-metric-value">${totalRules}</span>
+                    <span class="pb-metric-label">${totalRules === 1 ? 'regola' : 'regole'}</span>
                 </div>
-                <div class="pb-stat">
-                    <span class="pb-stat-value">${totalImages}</span>
-                    <span class="pb-stat-label">Esempi</span>
+                <div class="pb-metric">
+                    <span class="pb-metric-value">${totalImages}</span>
+                    <span class="pb-metric-label">${totalImages === 1 ? 'esempio' : 'esempi'}</span>
                 </div>
-                <div class="pb-stat">
-                    <span class="pb-stat-value" ${avgWr !== null ? `style="color:${ui.setupWinRateColor(avgWr)}"` : ''}>${avgWr !== null ? avgWr + '%' : '—'}</span>
-                    <span class="pb-stat-label">Win rate medio</span>
+                ${avgWr !== null ? `
+                <div class="pb-metric">
+                    <span class="pb-metric-value" style="color:${ui.setupWinRateColor(avgWr)}">${avgWr}%</span>
+                    <span class="pb-metric-label">win rate medio</span>
                 </div>
-            </section>
+                ` : ''}
+            </div>
+            ` : ''}
+
+            ${setups.length >= 4 ? `
+            <div class="pb-toolbar">
+                <div class="pb-search">
+                    <i class="ph-bold ph-magnifying-glass"></i>
+                    <input type="search" id="pb-search" placeholder="Cerca tra i setup" oninput="ui.filterPlaybook(this.value)" autocomplete="off">
+                </div>
+            </div>
             ` : ''}
 
             ${setups.length === 0 ? `
             <section class="pb-empty">
-                <div class="pb-empty-icon"><i class="ph-bold ph-book-open-text"></i></div>
-                <h3>Nessun setup definito</h3>
-                <p>Documenta le tue strategie: regole di ingresso, screenshot di riferimento e win rate, cosi' da avere sempre un criterio chiaro prima di entrare a mercato.</p>
+                <div class="pb-empty-mark"><i class="ph-bold ph-book-open-text"></i></div>
+                <h2>Nessun setup definito</h2>
+                <p>Un setup e' la descrizione di una situazione che sai riconoscere: il contesto in cui funziona, le condizioni da verificare prima di entrare e qualche esempio a cui tornare quando hai un dubbio.</p>
                 <button onclick="ui.openSetupModal()" class="pb-btn pb-btn-primary preserve-white">
                     <i class="ph-bold ph-plus"></i>
                     <span>Crea il primo setup</span>
                 </button>
             </section>
             ` : `
-            <section class="pb-grid">
-                ${setups.map(s => {
-                    const rulesCount = ui.countSetupRules(s);
-                    const imagesCount = ui.countSetupImages(s);
-                    const cover = imagesCount ? s.images[0] : null;
-                    const wrColor = ui.setupWinRateColor(s.winRate);
-                    return `
-                <article class="pb-card" onclick="ui.openSetupViewModal(${s.id})">
-                    <div class="pb-card-media${cover ? '' : ' pb-card-media--empty'}"${cover ? ` style="background-image:url(${cover})"` : ''}>
-                        ${cover ? '' : '<i class="ph-bold ph-chart-line-up"></i>'}
-                        ${imagesCount > 1 ? `<span class="pb-chip pb-chip--count"><i class="ph-bold ph-images"></i>${imagesCount}</span>` : ''}
-                        ${wrColor ? `<span class="pb-chip pb-chip--wr"><span style="width:6px;height:6px;border-radius:999px;background:${wrColor}"></span>${s.winRate}%</span>` : ''}
-                    </div>
-
-                    <div class="pb-card-body">
-                        <h3 class="pb-card-title">${s.name}</h3>
-                        <p class="pb-card-desc">${s.description || 'Nessuna descrizione.'}</p>
-                    </div>
-
-                    <div class="pb-card-foot">
-                        <div class="pb-meta">
-                            <span><i class="ph-bold ph-list-checks"></i>${rulesCount}</span>
-                            <span><i class="ph-bold ph-image"></i>${imagesCount}</span>
-                        </div>
-                        <button onclick="event.stopPropagation(); ui.openSetupModal(${s.id})" class="pb-icon-btn" title="Modifica setup" aria-label="Modifica setup">
-                            <i class="ph-bold ph-pencil-simple"></i>
-                        </button>
-                    </div>
-                </article>
-                `}).join('')}
+            <section class="pb-list" id="pb-list">
+                ${setups.map(s => ui.playbookRowMarkup(s)).join('')}
+                <div class="pb-noresult" id="pb-noresult" style="display:none">Nessun setup corrisponde alla ricerca.</div>
             </section>
             `}
         </div>
         `;
+    },
+
+    playbookRowMarkup(setup) {
+        const rules = ui.countSetupRules(setup);
+        const images = ui.countSetupImages(setup);
+        const cover = images ? setup.images[0] : null;
+        const wrColor = ui.setupWinRateColor(setup.winRate);
+        const wrValue = wrColor ? Math.max(0, Math.min(100, parseFloat(setup.winRate))) : null;
+        const name = setup.name || 'Senza nome';
+        // Chiave di ricerca gia' pronta: il filtro non deve rileggere il DOM.
+        const haystack = `${name} ${setup.description || ''}`.toLowerCase().replace(/"/g, '');
+
+        return `
+        <article class="pb-row" data-search="${haystack}" onclick="ui.openSetupViewModal(${setup.id})">
+            <div class="pb-thumb"${cover ? ` style="background-image:url(${cover})"` : ''}>
+                ${cover ? '' : `<span class="pb-thumb-letter">${name.trim().charAt(0)}</span>`}
+            </div>
+
+            <div class="pb-main">
+                <h3 class="pb-name">${name}</h3>
+                ${setup.description ? `<p class="pb-desc">${setup.description}</p>` : ''}
+                <div class="pb-tags">
+                    <span><i class="ph-bold ph-list-checks"></i>${rules} ${rules === 1 ? 'regola' : 'regole'}</span>
+                    <span><i class="ph-bold ph-image"></i>${images} ${images === 1 ? 'esempio' : 'esempi'}</span>
+                </div>
+            </div>
+
+            <div class="pb-wr">
+                ${wrColor ? `
+                <span class="pb-wr-value" style="color:${wrColor}">${setup.winRate}%</span>
+                <div class="pb-wr-track"><div class="pb-wr-fill" style="width:${wrValue}%;background:${wrColor}"></div></div>
+                ` : '<span class="pb-wr-none">win rate n.d.</span>'}
+            </div>
+
+            <button onclick="event.stopPropagation(); ui.openSetupModal(${setup.id})" class="pb-row-action" title="Modifica setup" aria-label="Modifica setup">
+                <i class="ph-bold ph-pencil-simple"></i>
+            </button>
+        </article>
+        `;
+    },
+
+    // Filtra nel DOM invece di rigenerare la pagina: cosi' il campo di ricerca
+    // non perde il contenuto ne' il focus mentre si scrive.
+    filterPlaybook(query) {
+        const list = document.getElementById('pb-list');
+        if (!list) return;
+
+        const q = String(query || '').trim().toLowerCase();
+        let visible = 0;
+
+        list.querySelectorAll('.pb-row').forEach(row => {
+            const match = !q || (row.dataset.search || '').includes(q);
+            row.style.display = match ? '' : 'none';
+            if (match) visible++;
+        });
+
+        const noResult = document.getElementById('pb-noresult');
+        if (noResult) noResult.style.display = visible ? 'none' : '';
     },
 
     openSetupViewModal(id) {
@@ -8705,20 +8744,15 @@ const ui = {
         const rules = (setup.rules || []).filter(r => String(r).trim() !== '');
         const images = setup.images || [];
         const wrColor = ui.setupWinRateColor(setup.winRate);
-
+        const wrValue = wrColor ? Math.max(0, Math.min(100, parseFloat(setup.winRate))) : null;
         const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
-        const metaLine = [
-            wrColor ? `<span style="color:${wrColor};font-weight:600">${setup.winRate}% win rate</span>` : null,
-            plural(rules.length, 'regola', 'regole'),
-            plural(images.length, 'esempio', 'esempi')
-        ].filter(Boolean).join(' · ');
 
         modal.innerHTML = `
             <div class="pb-modal pb-modal--wide">
                 <header class="pb-modal-head">
                     <div class="min-w-0">
-                        <h3 class="pb-modal-heading">${setup.name}</h3>
-                        <p class="pb-modal-sub">${metaLine}</p>
+                        <h3 class="pb-modal-title">${setup.name}</h3>
+                        <p class="pb-modal-sub">${plural(rules.length, 'regola', 'regole')} · ${plural(images.length, 'esempio', 'esempi')}</p>
                     </div>
                     <button onclick="ui.closeModals()" class="pb-icon-btn" title="Chiudi" aria-label="Chiudi">
                         <i class="ph-bold ph-x"></i>
@@ -8727,23 +8761,33 @@ const ui = {
 
                 <div class="pb-modal-body custom-scrollbar">
                     ${images.length ? `
-                    <img src="${images[0]}" class="pb-hero" alt="Esempio del setup" onclick="ui.viewFullImage('${images[0]}')">
+                    <img src="${images[0]}" class="pb-cover" alt="Esempio del setup" onclick="ui.viewFullImage('${images[0]}')">
+                    ` : ''}
+
+                    ${wrColor ? `
+                    <div class="pb-wr-panel">
+                        <span class="pb-wr-panel-value" style="color:${wrColor}">${setup.winRate}%</span>
+                        <div class="pb-wr-panel-body">
+                            <p class="pb-wr-panel-label">Win rate dichiarato</p>
+                            <div class="pb-wr-track"><div class="pb-wr-fill" style="width:${wrValue}%;background:${wrColor}"></div></div>
+                        </div>
+                    </div>
                     ` : ''}
 
                     ${setup.description ? `
                     <section>
-                        <span class="pb-section-label">Contesto</span>
-                        <p class="pb-prose">${setup.description}</p>
+                        <span class="pb-label">Contesto</span>
+                        <p class="pb-text">${setup.description}</p>
                     </section>
                     ` : ''}
 
                     ${rules.length ? `
                     <section>
-                        <span class="pb-section-label">Checklist di ingresso</span>
-                        <div class="pb-rules">
+                        <span class="pb-label">Checklist di ingresso</span>
+                        <div class="pb-checks">
                             ${rules.map((r, i) => `
-                            <div class="pb-rule">
-                                <span class="pb-rule-num">${String(i + 1).padStart(2, '0')}</span>
+                            <div class="pb-check">
+                                <span class="pb-check-num">${String(i + 1).padStart(2, '0')}</span>
                                 <span>${r}</span>
                             </div>
                             `).join('')}
@@ -8753,17 +8797,17 @@ const ui = {
 
                     ${images.length > 1 ? `
                     <section>
-                        <span class="pb-section-label">Esempi (${images.length})</span>
+                        <span class="pb-label">Esempi (${images.length})</span>
                         <div class="pb-gallery">
                             ${images.map(img => `
-                            <div class="pb-thumb" style="background-image:url(${img})" onclick="ui.viewFullImage('${img}')"></div>
+                            <div class="pb-shot" style="background-image:url(${img})" onclick="ui.viewFullImage('${img}')"></div>
                             `).join('')}
                         </div>
                     </section>
                     ` : ''}
 
                     ${!setup.description && !rules.length && !images.length ? `
-                    <p class="pb-prose" style="color:var(--text-muted)">Questo setup non ha ancora contenuti. Aprilo in modifica per aggiungere contesto, regole ed esempi.</p>
+                    <p class="pb-text" style="color:var(--text-muted)">Questo setup e' ancora vuoto. Aprilo in modifica per aggiungere il contesto, le regole e qualche esempio.</p>
                     ` : ''}
                 </div>
 
@@ -8790,9 +8834,9 @@ const ui = {
             if (found) setup = { ...found };
             if (!setup.rules || setup.rules.length === 0) setup.rules = ['', '', ''];
         }
-        
+
         ui.tempImages = setup.images ? [...setup.images] : [];
-        
+
         const modal = document.getElementById('modal-setup');
         if (!modal) return;
 
@@ -8800,8 +8844,8 @@ const ui = {
             <div class="pb-modal">
                 <header class="pb-modal-head">
                     <div class="min-w-0">
-                        <h3 class="pb-modal-heading">${id ? 'Modifica setup' : 'Nuovo setup'}</h3>
-                        <p class="pb-modal-sub">Definisci le condizioni che devono essere vere prima di entrare.</p>
+                        <h3 class="pb-modal-title">${id ? 'Modifica setup' : 'Nuovo setup'}</h3>
+                        <p class="pb-modal-sub">Descrivi quando si opera, e a quali condizioni.</p>
                     </div>
                     <button onclick="ui.closeModals()" class="pb-icon-btn" title="Chiudi" aria-label="Chiudi">
                         <i class="ph-bold ph-x"></i>
@@ -8811,7 +8855,7 @@ const ui = {
                 <div class="pb-modal-body custom-scrollbar">
                     <input type="hidden" id="s-id" value="${setup.id || ''}">
 
-                    <div class="pb-form-row">
+                    <div class="pb-grid-2">
                         <div>
                             <label class="pb-field-label" for="s-name">Nome</label>
                             <input type="text" id="s-name" class="pb-input" value="${setup.name}" placeholder="Es. Rottura e ritracciamento">
@@ -8824,21 +8868,21 @@ const ui = {
 
                     <div>
                         <label class="pb-field-label" for="s-desc">Contesto</label>
-                        <textarea id="s-desc" class="pb-textarea" placeholder="In quali condizioni di mercato questo setup funziona, e in quali va evitato.">${setup.description}</textarea>
+                        <textarea id="s-desc" class="pb-textarea" placeholder="In quali condizioni di mercato questo setup funziona, e quando invece va evitato.">${setup.description}</textarea>
                     </div>
 
                     <div>
-                        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:11px">
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px">
                             <label class="pb-field-label" style="margin:0">Regole di ingresso</label>
-                            <button type="button" onclick="ui.addRuleInput()" class="pb-btn pb-btn-ghost" style="height:32px;padding:0 12px;font-size:13px">
+                            <button type="button" onclick="ui.addRuleInput()" class="pb-btn pb-btn-ghost" style="height:34px;padding:0 13px;font-size:13.5px">
                                 <i class="ph-bold ph-plus"></i>
                                 <span>Aggiungi</span>
                             </button>
                         </div>
-                        <div id="rules-container" style="display:flex;flex-direction:column;gap:8px">
+                        <div id="rules-container" style="display:flex;flex-direction:column;gap:9px">
                             ${setup.rules.map(r => ui.ruleInputMarkup(r)).join('')}
                         </div>
-                        <p class="pb-field-hint">Le righe lasciate vuote non vengono salvate.</p>
+                        <p class="pb-hint">Le righe lasciate vuote non vengono salvate.</p>
                     </div>
 
                     <div>
@@ -8849,7 +8893,7 @@ const ui = {
                                 <p class="pb-drop-title">Trascina qui gli screenshot</p>
                                 <p class="pb-drop-hint">oppure tocca per sceglierli</p>
                             </div>
-                            <div id="gallery-preview-setup" class="pb-preview" style="display:none"></div>
+                            <div id="gallery-preview-setup" class="pb-shots" style="display:none"></div>
                         </div>
                         <button id="clear-imgs-btn-setup" type="button" class="pb-btn pb-btn-danger" style="margin-top:10px;display:none" onclick="event.stopPropagation(); ui.tempImages=[]; ui.renderTempImagesSetup();">
                             <i class="ph-bold ph-trash"></i>
@@ -8876,12 +8920,11 @@ const ui = {
         ui.openModal('modal-setup');
         ui.renderTempImagesSetup();
 
-        // Setup Image Upload Handlers
         const dropZone = document.getElementById('drop-zone-setup');
         const fileInput = document.getElementById('file-input-setup');
         if (dropZone && fileInput) {
             dropZone.onclick = (e) => {
-                if (e.target.closest('#clear-imgs-btn-setup') || e.target.closest('.pb-preview-remove')) return;
+                if (e.target.closest('#clear-imgs-btn-setup') || e.target.closest('.pb-shot-del')) return;
                 fileInput.click();
             };
             dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('is-dragging'); };
@@ -8893,9 +8936,9 @@ const ui = {
 
     ruleInputMarkup(value = '') {
         return `
-            <div class="pb-rule-edit">
+            <div class="pb-rule-row">
                 <input type="text" class="rule-input pb-input" value="${value}" placeholder="Condizione da verificare prima di entrare">
-                <button type="button" class="pb-rule-remove" title="Rimuovi regola" aria-label="Rimuovi regola" onclick="this.parentElement.remove()">
+                <button type="button" class="pb-rule-del" title="Rimuovi regola" aria-label="Rimuovi regola" onclick="this.parentElement.remove()">
                     <i class="ph-bold ph-x"></i>
                 </button>
             </div>
@@ -8919,9 +8962,8 @@ const ui = {
 
         gallery.innerHTML = '';
 
-        // Display gestito inline: le classi utility di Tailwind e le classi
-        // componente qui sotto hanno la stessa specificita', quindi l'ordine di
-        // caricamento deciderebbe chi vince.
+        // Display gestito inline: le utility di Tailwind e le classi componente
+        // hanno la stessa specificita', quindi vincerebbe l'ordine di caricamento.
         if (!ui.tempImages.length) {
             gallery.style.display = 'none';
             placeholder.style.display = '';
@@ -8935,13 +8977,13 @@ const ui = {
 
         ui.tempImages.forEach((src, index) => {
             const item = document.createElement('div');
-            item.className = 'pb-preview-item';
+            item.className = 'pb-shot-item';
             item.style.backgroundImage = `url(${src})`;
             item.onclick = (e) => { e.stopPropagation(); ui.viewFullImage(src); };
 
             const remove = document.createElement('button');
             remove.type = 'button';
-            remove.className = 'pb-preview-remove preserve-white';
+            remove.className = 'pb-shot-del preserve-white';
             remove.title = 'Rimuovi esempio';
             remove.setAttribute('aria-label', 'Rimuovi esempio');
             remove.innerHTML = '<i class="ph-bold ph-x"></i>';
