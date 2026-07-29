@@ -8577,137 +8577,119 @@ const ui = {
     // ==========================================
     // PLAYBOOK
     // ==========================================
+    // Regole e immagini valorizzate di un setup, contate in modo difensivo:
+    // i dati vecchi possono avere campi mancanti o righe vuote.
+    countSetupRules(setup) {
+        return (setup.rules || []).filter(r => String(r).trim() !== '').length;
+    },
+
+    countSetupImages(setup) {
+        return (setup.images || []).length;
+    },
+
+    // Colore del win rate: unica eccezione al monocromatico, perché qui il
+    // colore porta informazione.
+    setupWinRateColor(winRate) {
+        const n = parseFloat(winRate);
+        if (isNaN(n)) return null;
+        if (n >= 60) return 'var(--accent-green)';
+        if (n >= 45) return 'var(--accent-orange)';
+        return 'var(--accent-red)';
+    },
+
     playbook() {
         if (!ui.container) return;
         const setups = DataStore.data.playbook || [];
-        
-        const totalRules = setups.reduce((acc, s) => acc + (s.rules ? s.rules.filter(r => r.trim() !== '').length : 0), 0);
-        const totalImages = setups.reduce((acc, s) => acc + (s.images ? s.images.length : 0), 0);
-        const avgWr = setups.filter(s => s.winRate).length > 0
-            ? (setups.filter(s => s.winRate).reduce((acc, s) => acc + parseFloat(s.winRate), 0) / setups.filter(s => s.winRate).length).toFixed(1)
+
+        const totalRules = setups.reduce((acc, s) => acc + ui.countSetupRules(s), 0);
+        const totalImages = setups.reduce((acc, s) => acc + ui.countSetupImages(s), 0);
+        const rated = setups.filter(s => !isNaN(parseFloat(s.winRate)));
+        const avgWr = rated.length
+            ? (rated.reduce((acc, s) => acc + parseFloat(s.winRate), 0) / rated.length).toFixed(0)
             : null;
 
+        const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+        const subtitle = setups.length
+            ? `${plural(setups.length, 'setup', 'setup')} · ${plural(totalRules, 'regola', 'regole')} · ${plural(totalImages, 'esempio', 'esempi')}`
+            : 'Le tue strategie operative, documentate in un unico posto.';
+
         ui.container.innerHTML = `
-        <div class="playbook-page fade-in flex flex-col w-full" style="min-height: calc(100vh - 180px);">
+        <div class="pb-page fade-in">
 
-            <!-- Top Bar -->
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                <div>
-                    <h1 class="text-2xl md:text-3xl font-black tracking-tight text-[var(--text-main)] flex items-center gap-3">
-                        <span class="w-8 h-8 rounded-lg bg-[var(--accent-blue)] flex items-center justify-center flex-shrink-0">
-                            <i class="ph-bold ph-book-open-text text-sm text-white"></i>
-                        </span>
-                        Playbook
-                    </h1>
+            <header class="pb-header">
+                <div class="min-w-0">
+                    <h1 class="pb-title">Playbook</h1>
+                    <p class="pb-subtitle">${subtitle}</p>
                 </div>
-                <button onclick="ui.openSetupModal()" class="group flex items-center gap-2 bg-[var(--accent-blue)] text-white preserve-white pl-4 pr-5 py-2.5 rounded-xl text-sm font-bold hover:opacity-90 transition-all">
-                    <i class="ph-bold ph-plus text-base"></i>
-                    <span>Nuovo Setup</span>
+                <button onclick="ui.openSetupModal()" class="pb-btn pb-btn-primary preserve-white">
+                    <i class="ph-bold ph-plus"></i>
+                    <span>Nuovo setup</span>
                 </button>
-            </div>
+            </header>
 
-            ${setups.length > 0 ? `
-            <!-- Stats Strip -->
-            <div class="playbook-stats grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
-                <div class="playbook-stat-item flex items-center gap-3 bg-[var(--bg-card)] border border-[var(--glass-border)] rounded-xl px-4 py-3">
-                    <div class="w-9 h-9 rounded-lg bg-[var(--accent-blue)]/10 flex items-center justify-center flex-shrink-0">
-                        <i class="ph-bold ph-book-open-text text-base text-[var(--accent-blue)]"></i>
-                    </div>
-                    <div>
-                        <p class="text-lg font-black text-[var(--text-main)] leading-none">${setups.length}</p>
-                        <p class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mt-0.5">Setup</p>
-                    </div>
+            ${setups.length ? `
+            <section class="pb-stats">
+                <div class="pb-stat">
+                    <span class="pb-stat-value">${setups.length}</span>
+                    <span class="pb-stat-label">Setup</span>
                 </div>
-                <div class="playbook-stat-item flex items-center gap-3 bg-[var(--bg-card)] border border-[var(--glass-border)] rounded-xl px-4 py-3">
-                    <div class="w-9 h-9 rounded-lg bg-[var(--accent-green)]/10 flex items-center justify-center flex-shrink-0">
-                        <i class="ph-bold ph-list-checks text-base text-[var(--accent-green)]"></i>
-                    </div>
-                    <div>
-                        <p class="text-lg font-black text-[var(--text-main)] leading-none">${totalRules}</p>
-                        <p class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mt-0.5">Regole</p>
-                    </div>
+                <div class="pb-stat">
+                    <span class="pb-stat-value">${totalRules}</span>
+                    <span class="pb-stat-label">Regole</span>
                 </div>
-                <div class="playbook-stat-item flex items-center gap-3 bg-[var(--bg-card)] border border-[var(--glass-border)] rounded-xl px-4 py-3">
-                    <div class="w-9 h-9 rounded-lg bg-[var(--accent-purple)]/10 flex items-center justify-center flex-shrink-0">
-                        <i class="ph-bold ph-image text-base text-[var(--accent-purple)]"></i>
-                    </div>
-                    <div>
-                        <p class="text-lg font-black text-[var(--text-main)] leading-none">${totalImages}</p>
-                        <p class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mt-0.5">Esempi</p>
-                    </div>
+                <div class="pb-stat">
+                    <span class="pb-stat-value">${totalImages}</span>
+                    <span class="pb-stat-label">Esempi</span>
                 </div>
-                <div class="playbook-stat-item flex items-center gap-3 bg-[var(--bg-card)] border border-[var(--glass-border)] rounded-xl px-4 py-3">
-                    <div class="w-9 h-9 rounded-lg bg-[var(--accent-orange)]/10 flex items-center justify-center flex-shrink-0">
-                        <i class="ph-bold ph-crosshair text-base text-[var(--accent-orange)]"></i>
-                    </div>
-                    <div>
-                        <p class="text-lg font-black text-[var(--text-main)] leading-none">${avgWr ? avgWr + '%' : '—'}</p>
-                        <p class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mt-0.5">Avg Win Rate</p>
-                    </div>
+                <div class="pb-stat">
+                    <span class="pb-stat-value" ${avgWr !== null ? `style="color:${ui.setupWinRateColor(avgWr)}"` : ''}>${avgWr !== null ? avgWr + '%' : '—'}</span>
+                    <span class="pb-stat-label">Win rate medio</span>
                 </div>
-            </div>
+            </section>
             ` : ''}
 
             ${setups.length === 0 ? `
-            <!-- Empty State -->
-            <div class="flex-1 flex flex-col items-center justify-center text-center py-20">
-                <div class="w-16 h-16 rounded-2xl bg-[var(--card-hover)] border border-[var(--glass-border)] flex items-center justify-center mb-6">
-                    <i class="ph-bold ph-book-open-text text-3xl text-[var(--text-muted)]"></i>
-                </div>
-                <h3 class="text-lg font-bold text-[var(--text-main)] mb-2">Nessun setup definito</h3>
-                <p class="text-sm text-[var(--text-muted)] max-w-sm mb-8 leading-relaxed">Documenta i tuoi setup operativi: regole di ingresso, screenshot e win rate per avere sempre un riferimento chiaro.</p>
-                <button onclick="ui.openSetupModal()" class="flex items-center gap-2 bg-[var(--accent-blue)] text-white preserve-white pl-4 pr-5 py-2.5 rounded-xl text-sm font-bold hover:opacity-90 transition-all">
-                    <i class="ph-bold ph-plus text-base"></i>
-                    Crea il primo Setup
+            <section class="pb-empty">
+                <div class="pb-empty-icon"><i class="ph-bold ph-book-open-text"></i></div>
+                <h3>Nessun setup definito</h3>
+                <p>Documenta le tue strategie: regole di ingresso, screenshot di riferimento e win rate, cosi' da avere sempre un criterio chiaro prima di entrare a mercato.</p>
+                <button onclick="ui.openSetupModal()" class="pb-btn pb-btn-primary preserve-white">
+                    <i class="ph-bold ph-plus"></i>
+                    <span>Crea il primo setup</span>
                 </button>
-            </div>
+            </section>
             ` : `
-            <!-- Setup List -->
-            <div class="playbook-list flex flex-col gap-3 flex-1">
-                ${setups.map((s, idx) => {
-                    const rulesCount = s.rules ? s.rules.filter(r => r.trim() !== '').length : 0;
-                    const imagesCount = s.images ? s.images.length : 0;
-                    const hasWr = s.winRate && !isNaN(parseFloat(s.winRate));
-                    const wrVal = hasWr ? parseFloat(s.winRate) : 0;
-                    const wrColor = hasWr ? (wrVal >= 60 ? 'text-[var(--accent-green)]' : wrVal >= 45 ? 'text-[var(--accent-orange)]' : 'text-[var(--accent-red)]') : '';
+            <section class="pb-grid">
+                ${setups.map(s => {
+                    const rulesCount = ui.countSetupRules(s);
+                    const imagesCount = ui.countSetupImages(s);
+                    const cover = imagesCount ? s.images[0] : null;
+                    const wrColor = ui.setupWinRateColor(s.winRate);
                     return `
-                <div class="playbook-card group bg-[var(--bg-card)] border border-[var(--glass-border)] rounded-2xl overflow-hidden cursor-pointer hover:border-[var(--accent-blue)]/40 transition-all duration-200" onclick="ui.openSetupViewModal(${s.id})">
-                    <div class="flex flex-col md:flex-row">
-                        <!-- Thumbnail -->
-                        ${s.images && s.images.length > 0 ? `
-                        <div class="md:w-52 lg:w-64 h-40 md:h-auto flex-shrink-0 relative overflow-hidden">
-                            <div class="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-500" style="background-image:url(${s.images[0]})"></div>
-                            ${imagesCount > 1 ? `<div class="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-sm text-white text-[10px] font-bold"><i class="ph-bold ph-images text-[9px]"></i> ${imagesCount}</div>` : ''}
-                        </div>
-                        ` : `
-                        <div class="hidden md:flex md:w-52 lg:w-64 flex-shrink-0 items-center justify-center bg-[var(--card-hover)]">
-                            <i class="ph-bold ph-chart-line-up text-4xl text-[var(--text-muted)] opacity-20"></i>
-                        </div>
-                        `}
-                        
-                        <!-- Content -->
-                        <div class="flex-1 p-5 md:p-6 flex flex-col justify-between min-w-0">
-                            <div>
-                                <div class="flex items-start justify-between gap-3 mb-2">
-                                    <h3 class="text-base md:text-lg font-bold text-[var(--text-main)] leading-snug group-hover:text-[var(--accent-blue)] transition-colors">${s.name}</h3>
-                                    <button onclick="event.stopPropagation(); ui.openSetupModal(${s.id})" class="w-8 h-8 rounded-lg bg-[var(--card-hover)] text-[var(--text-muted)] hover:bg-[var(--accent-blue)] hover:text-white flex items-center justify-center transition-all flex-shrink-0 opacity-0 group-hover:opacity-100" title="Modifica">
-                                        <i class="ph-bold ph-pencil-simple text-xs"></i>
-                                    </button>
-                                </div>
-                                <p class="text-sm text-[var(--text-muted)] line-clamp-2 leading-relaxed">${s.description || 'Nessuna descrizione.'}</p>
-                            </div>
-                            
-                            <!-- Meta -->
-                            <div class="flex items-center gap-5 mt-4 text-xs text-[var(--text-muted)]">
-                                ${hasWr ? `<span class="font-bold ${wrColor}">${s.winRate}% WR</span>` : ''}
-                                <span class="flex items-center gap-1.5"><i class="ph-bold ph-list-checks"></i> ${rulesCount} ${rulesCount === 1 ? 'regola' : 'regole'}</span>
-                                <span class="flex items-center gap-1.5"><i class="ph-bold ph-image"></i> ${imagesCount} ${imagesCount === 1 ? 'esempio' : 'esempi'}</span>
-                            </div>
-                        </div>
+                <article class="pb-card" onclick="ui.openSetupViewModal(${s.id})">
+                    <div class="pb-card-media${cover ? '' : ' pb-card-media--empty'}"${cover ? ` style="background-image:url(${cover})"` : ''}>
+                        ${cover ? '' : '<i class="ph-bold ph-chart-line-up"></i>'}
+                        ${imagesCount > 1 ? `<span class="pb-chip pb-chip--count"><i class="ph-bold ph-images"></i>${imagesCount}</span>` : ''}
+                        ${wrColor ? `<span class="pb-chip pb-chip--wr"><span style="width:6px;height:6px;border-radius:999px;background:${wrColor}"></span>${s.winRate}%</span>` : ''}
                     </div>
-                </div>
+
+                    <div class="pb-card-body">
+                        <h3 class="pb-card-title">${s.name}</h3>
+                        <p class="pb-card-desc">${s.description || 'Nessuna descrizione.'}</p>
+                    </div>
+
+                    <div class="pb-card-foot">
+                        <div class="pb-meta">
+                            <span><i class="ph-bold ph-list-checks"></i>${rulesCount}</span>
+                            <span><i class="ph-bold ph-image"></i>${imagesCount}</span>
+                        </div>
+                        <button onclick="event.stopPropagation(); ui.openSetupModal(${s.id})" class="pb-icon-btn" title="Modifica setup" aria-label="Modifica setup">
+                            <i class="ph-bold ph-pencil-simple"></i>
+                        </button>
+                    </div>
+                </article>
                 `}).join('')}
-            </div>
+            </section>
             `}
         </div>
         `;
@@ -8720,100 +8702,81 @@ const ui = {
         const modal = document.getElementById('modal-setup-view');
         if (!modal) return;
 
-        const rules = (setup.rules || []).filter(r => r.trim() !== '');
+        const rules = (setup.rules || []).filter(r => String(r).trim() !== '');
         const images = setup.images || [];
-        
-        // Win rate color
-        const wrn = parseFloat(setup.winRate);
-        const wrClass = isNaN(wrn) ? '' : wrn >= 65 ? 'text-emerald-500' : wrn >= 50 ? 'text-amber-500' : 'text-rose-500';
-        const wrBg = isNaN(wrn) ? '' : wrn >= 65 ? 'bg-emerald-500/10 border-emerald-500/20' : wrn >= 50 ? 'bg-amber-500/10 border-amber-500/20' : 'bg-rose-500/10 border-rose-500/20';
+        const wrColor = ui.setupWinRateColor(setup.winRate);
+
+        const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+        const metaLine = [
+            wrColor ? `<span style="color:${wrColor};font-weight:600">${setup.winRate}% win rate</span>` : null,
+            plural(rules.length, 'regola', 'regole'),
+            plural(images.length, 'esempio', 'esempi')
+        ].filter(Boolean).join(' · ');
 
         modal.innerHTML = `
-            <div class="bg-[var(--bg-card)] w-full max-w-4xl rounded-3xl border border-[var(--glass-border)] shadow-2xl transform transition-all scale-100 max-h-[85vh] overflow-hidden flex flex-col" style="min-width: min(90vw, 700px);">
-                <!-- Header -->
-                <div class="flex items-center justify-between px-7 py-5 border-b border-[var(--glass-border)] flex-shrink-0">
-                    <div class="flex items-center gap-4 min-w-0">
-                        <div class="w-10 h-10 rounded-xl bg-[var(--accent-blue)]/10 flex items-center justify-center flex-shrink-0">
-                            <i class="ph-bold ph-book-open-text text-lg text-[var(--accent-blue)]"></i>
-                        </div>
-                        <div class="min-w-0">
-                            <h3 class="text-lg font-bold text-[var(--text-main)] truncate">${setup.name}</h3>
-                            <div class="flex items-center gap-3 mt-0.5 flex-wrap">
-                                ${setup.winRate ? `<span class="text-xs font-bold ${wrClass}">${setup.winRate}% WR</span>` : ''}
-                                <span class="text-xs text-[var(--text-muted)]">${rules.length} regole · ${images.length} esempi</span>
-                            </div>
-                        </div>
+            <div class="pb-modal pb-modal--wide">
+                <header class="pb-modal-head">
+                    <div class="min-w-0">
+                        <h3 class="pb-modal-heading">${setup.name}</h3>
+                        <p class="pb-modal-sub">${metaLine}</p>
                     </div>
-                    <div class="flex items-center gap-2 flex-shrink-0">
-                        <button onclick="ui.closeModals(); setTimeout(() => ui.openSetupModal(${setup.id}), 200)" class="w-10 h-10 rounded-xl bg-[var(--card-hover)] hover:bg-[var(--accent-blue)] flex items-center justify-center text-[var(--text-muted)] hover:text-white transition-all duration-200" title="Modifica">
-                            <i class="ph-bold ph-pencil-simple text-lg"></i>
-                        </button>
-                        <button onclick="ui.closeModals()" class="w-10 h-10 rounded-xl bg-[var(--card-hover)] hover:bg-[var(--input-bg)] flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all duration-200">
-                            <i class="ph-bold ph-x text-lg"></i>
-                        </button>
-                    </div>
-                </div>
+                    <button onclick="ui.closeModals()" class="pb-icon-btn" title="Chiudi" aria-label="Chiudi">
+                        <i class="ph-bold ph-x"></i>
+                    </button>
+                </header>
 
-                <!-- Body -->
-                <div class="px-7 py-6 overflow-y-auto custom-scrollbar flex-1 space-y-6">
-                    <!-- Hero Image -->
-                    ${images.length > 0 ? `
-                        <div class="w-full rounded-2xl overflow-hidden border border-[var(--glass-border)] group cursor-pointer" onclick="ui.viewFullImage('${images[0]}')">
-                            <img src="${images[0]}" class="w-full max-h-[300px] object-cover group-hover:scale-105 transition-transform duration-500" alt="Setup screenshot">
-                        </div>
+                <div class="pb-modal-body custom-scrollbar">
+                    ${images.length ? `
+                    <img src="${images[0]}" class="pb-hero" alt="Esempio del setup" onclick="ui.viewFullImage('${images[0]}')">
                     ` : ''}
 
-                    <!-- Descrizione -->
                     ${setup.description ? `
-                        <div>
-                            <h4 class="text-[10px] font-extrabold uppercase tracking-[0.15em] text-[var(--text-muted)] mb-3 flex items-center gap-2">
-                                <i class="ph-bold ph-text-align-left text-sm"></i> Descrizione & Contesto
-                            </h4>
-                            <p class="text-sm text-[var(--text-main)] leading-relaxed bg-[var(--input-bg)] rounded-2xl p-5 border border-[var(--glass-border)]">${setup.description}</p>
-                        </div>
+                    <section>
+                        <span class="pb-section-label">Contesto</span>
+                        <p class="pb-prose">${setup.description}</p>
+                    </section>
                     ` : ''}
 
-                    <!-- Regole -->
-                    ${rules.length > 0 ? `
-                        <div class="rounded-2xl border border-[var(--glass-border)] bg-[var(--input-bg)] p-5">
-                            <h4 class="text-[10px] font-extrabold uppercase tracking-[0.15em] text-[var(--text-muted)] mb-4 flex items-center gap-2">
-                                <i class="ph-bold ph-list-checks text-sm"></i> Checklist di Ingresso
-                            </h4>
-                            <div class="space-y-2">
-                                ${rules.map((r, i) => `
-                                    <div class="playbook-rule-item flex items-center gap-3.5 p-3 rounded-xl bg-[var(--bg-card)] border border-[var(--glass-border)]">
-                                        <div class="w-7 h-7 rounded-lg bg-[var(--accent-blue)]/10 text-[var(--accent-blue)] flex items-center justify-center shrink-0 text-[11px] font-bold">${i + 1}</div>
-                                        <span class="text-sm text-[var(--text-main)] font-medium">${r}</span>
-                                    </div>
-                                `).join('')}
+                    ${rules.length ? `
+                    <section>
+                        <span class="pb-section-label">Checklist di ingresso</span>
+                        <div class="pb-rules">
+                            ${rules.map((r, i) => `
+                            <div class="pb-rule">
+                                <span class="pb-rule-num">${String(i + 1).padStart(2, '0')}</span>
+                                <span>${r}</span>
                             </div>
+                            `).join('')}
                         </div>
+                    </section>
                     ` : ''}
 
-                    <!-- Gallery -->
                     ${images.length > 1 ? `
-                        <div>
-                            <h4 class="text-[10px] font-extrabold uppercase tracking-[0.15em] text-[var(--text-muted)] mb-3 flex items-center gap-2">
-                                <i class="ph-bold ph-image text-sm"></i> Tutti gli Esempi (${images.length})
-                            </h4>
-                            <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-                                ${images.map(img => `
-                                    <div class="aspect-video bg-cover bg-center rounded-xl border border-[var(--glass-border)] cursor-pointer hover:border-[var(--accent-blue)]/40 hover:shadow-md hover:scale-[1.01] transition-all duration-200" style="background-image: url(${img})" onclick="ui.viewFullImage('${img}')"></div>
-                                `).join('')}
-                            </div>
+                    <section>
+                        <span class="pb-section-label">Esempi (${images.length})</span>
+                        <div class="pb-gallery">
+                            ${images.map(img => `
+                            <div class="pb-thumb" style="background-image:url(${img})" onclick="ui.viewFullImage('${img}')"></div>
+                            `).join('')}
                         </div>
+                    </section>
+                    ` : ''}
+
+                    ${!setup.description && !rules.length && !images.length ? `
+                    <p class="pb-prose" style="color:var(--text-muted)">Questo setup non ha ancora contenuti. Aprilo in modifica per aggiungere contesto, regole ed esempi.</p>
                     ` : ''}
                 </div>
 
-                <!-- Footer -->
-                <div class="px-7 py-4 border-t border-[var(--glass-border)] flex items-center justify-between flex-shrink-0">
-                    <button onclick="ui.deleteSetup(${setup.id})" class="text-rose-500 hover:text-rose-400 text-sm font-bold flex items-center gap-2 px-4 py-2.5 rounded-xl hover:bg-rose-500/10 transition-all duration-200">
-                        <i class="ph-bold ph-trash"></i> Elimina
+                <footer class="pb-modal-foot">
+                    <button onclick="ui.deleteSetup(${setup.id})" class="pb-btn pb-btn-danger">
+                        <i class="ph-bold ph-trash"></i>
+                        <span>Elimina</span>
                     </button>
-                    <button onclick="ui.closeModals(); setTimeout(() => ui.openSetupModal(${setup.id}), 200)" class="bg-[var(--accent-blue)] text-white preserve-white px-6 py-2.5 rounded-xl text-sm font-bold hover:opacity-90 transition-all flex items-center gap-2">
-                        <i class="ph-bold ph-pencil-simple"></i> Modifica Setup
+                    <button onclick="ui.closeModals(); setTimeout(() => ui.openSetupModal(${setup.id}), 200)" class="pb-btn pb-btn-primary preserve-white">
+                        <i class="ph-bold ph-pencil-simple"></i>
+                        <span>Modifica</span>
                     </button>
-                </div>
+                </footer>
             </div>
         `;
 
@@ -8834,158 +8797,163 @@ const ui = {
         if (!modal) return;
 
         modal.innerHTML = `
-            <div class="bg-[var(--bg-card)] w-full max-w-3xl rounded-3xl border border-[var(--glass-border)] shadow-2xl transform transition-all scale-100 max-h-[92vh] overflow-hidden flex flex-col">
-                <!-- Header -->
-                <div class="flex items-center justify-between px-6 py-5 border-b border-[var(--glass-border)] flex-shrink-0">
-                    <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 rounded-xl bg-[var(--accent-blue)]/10 flex items-center justify-center">
-                            <i class="ph-bold ph-book-open-text text-lg text-[var(--accent-blue)]"></i>
+            <div class="pb-modal">
+                <header class="pb-modal-head">
+                    <div class="min-w-0">
+                        <h3 class="pb-modal-heading">${id ? 'Modifica setup' : 'Nuovo setup'}</h3>
+                        <p class="pb-modal-sub">Definisci le condizioni che devono essere vere prima di entrare.</p>
+                    </div>
+                    <button onclick="ui.closeModals()" class="pb-icon-btn" title="Chiudi" aria-label="Chiudi">
+                        <i class="ph-bold ph-x"></i>
+                    </button>
+                </header>
+
+                <div class="pb-modal-body custom-scrollbar">
+                    <input type="hidden" id="s-id" value="${setup.id || ''}">
+
+                    <div class="pb-form-row">
+                        <div>
+                            <label class="pb-field-label" for="s-name">Nome</label>
+                            <input type="text" id="s-name" class="pb-input" value="${setup.name}" placeholder="Es. Rottura e ritracciamento">
                         </div>
                         <div>
-                            <h3 class="text-lg font-bold text-[var(--text-main)]">${id ? 'Modifica Setup' : 'Nuovo Setup'}</h3>
-                            <p class="text-xs text-[var(--text-muted)]">Definisci le tue regole d'oro</p>
-                        </div>
-                    </div>
-                    <button onclick="ui.closeModals()" class="w-10 h-10 rounded-xl bg-[var(--card-hover)] hover:bg-[var(--input-bg)] flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all duration-200">
-                        <i class="ph-bold ph-x text-lg"></i>
-                    </button>
-                </div>
-                
-                <!-- Body -->
-                <div class="p-6 overflow-y-auto custom-scrollbar flex-1 space-y-6">
-                    <input type="hidden" id="s-id" value="${setup.id || ''}">
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="md:col-span-2 space-y-2">
-                            <label class="block text-[10px] font-extrabold uppercase tracking-[0.15em] text-[var(--text-muted)]">Nome Setup</label>
-                            <input type="text" id="s-name" value="${setup.name}" class="w-full bg-[var(--input-bg)] border border-[var(--glass-border)] rounded-xl p-3 outline-none text-[var(--text-main)] placeholder-[var(--text-muted)] focus:border-[var(--accent-blue)]/50 focus:ring-4 focus:ring-[var(--accent-blue)]/10 transition-all font-bold" placeholder="Es. Rottura e Ritracciamento">
-                        </div>
-                        <div class="space-y-2">
-                            <label class="block text-[10px] font-extrabold uppercase tracking-[0.15em] text-[var(--text-muted)]">Win Rate (%)</label>
-                            <input type="number" id="s-wr" value="${setup.winRate}" class="w-full bg-[var(--input-bg)] border border-[var(--glass-border)] rounded-xl p-3 outline-none text-[var(--text-main)] placeholder-[var(--text-muted)] focus:border-[var(--accent-blue)]/50 focus:ring-4 focus:ring-[var(--accent-blue)]/10 transition-all font-bold text-center" placeholder="Es. 65">
+                            <label class="pb-field-label" for="s-wr">Win rate (%)</label>
+                            <input type="number" id="s-wr" class="pb-input" value="${setup.winRate}" placeholder="65" min="0" max="100" style="text-align:center">
                         </div>
                     </div>
 
-                    <div class="space-y-2">
-                        <label class="block text-[10px] font-extrabold uppercase tracking-[0.15em] text-[var(--text-muted)]">Descrizione & Contesto</label>
-                        <textarea id="s-desc" class="w-full bg-[var(--input-bg)] border border-[var(--glass-border)] rounded-xl p-3 outline-none text-sm text-[var(--text-main)] placeholder-[var(--text-muted)] focus:border-[var(--accent-blue)]/50 focus:ring-4 focus:ring-[var(--accent-blue)]/10 transition-all min-h-[80px] resize-none" placeholder="Descrivi il contesto di mercato ideale per questo setup...">${setup.description}</textarea>
+                    <div>
+                        <label class="pb-field-label" for="s-desc">Contesto</label>
+                        <textarea id="s-desc" class="pb-textarea" placeholder="In quali condizioni di mercato questo setup funziona, e in quali va evitato.">${setup.description}</textarea>
                     </div>
 
-                    <div class="bg-[var(--input-bg)] border border-[var(--glass-border)] rounded-2xl p-5">
-                        <div class="flex items-center justify-between mb-4">
-                            <label class="text-[10px] font-extrabold uppercase tracking-[0.15em] text-[var(--text-muted)] flex items-center gap-2">
-                                <i class="ph-bold ph-list-checks text-sm"></i>
-                                Regole di Ingresso
-                            </label>
-                            <button onclick="ui.addRuleInput()" class="text-xs font-bold text-[var(--accent-blue)] hover:opacity-70 transition-opacity flex items-center gap-1">
-                                <i class="ph-bold ph-plus text-[10px]"></i> Aggiungi
+                    <div>
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:11px">
+                            <label class="pb-field-label" style="margin:0">Regole di ingresso</label>
+                            <button type="button" onclick="ui.addRuleInput()" class="pb-btn pb-btn-ghost" style="height:32px;padding:0 12px;font-size:13px">
+                                <i class="ph-bold ph-plus"></i>
+                                <span>Aggiungi</span>
                             </button>
                         </div>
-                        <div id="rules-container" class="space-y-2">
-                            ${setup.rules.map(r => `
-                                <div class="flex items-center gap-3">
-                                    <div class="w-6 h-6 rounded-md bg-[var(--accent-blue)]/10 text-[var(--accent-blue)] flex items-center justify-center shrink-0">
-                                        <i class="ph-bold ph-check text-xs"></i>
-                                    </div>
-                                    <input type="text" class="rule-input flex-1 bg-[var(--bg-card)] border border-[var(--glass-border)] rounded-lg p-2.5 outline-none text-sm text-[var(--text-main)] placeholder-[var(--text-muted)] focus:border-[var(--accent-blue)]/50 transition-all" value="${r}" placeholder="Condizione necessaria...">
-                                </div>
-                            `).join('')}
+                        <div id="rules-container" style="display:flex;flex-direction:column;gap:8px">
+                            ${setup.rules.map(r => ui.ruleInputMarkup(r)).join('')}
                         </div>
+                        <p class="pb-field-hint">Le righe lasciate vuote non vengono salvate.</p>
                     </div>
 
-                    <!-- Images -->
                     <div>
-                        <label class="block text-[10px] font-extrabold uppercase tracking-[0.15em] text-[var(--text-muted)] mb-3 flex items-center gap-2">
-                            <i class="ph-bold ph-image text-sm"></i>
-                            Esempi da Manuale
-                        </label>
-                        <div id="drop-zone-setup" class="relative border-2 border-dashed border-[var(--glass-border)] rounded-2xl p-6 cursor-pointer hover:border-[var(--accent-blue)]/50 hover:bg-[var(--accent-blue)]/5 transition-all duration-200 min-h-[100px] flex items-center justify-center">
-                            <input type="file" id="file-input-setup" class="hidden" accept="image/*" multiple>
-                            <div id="drop-zone-content-setup" class="${ui.tempImages.length ? 'hidden' : 'flex'} flex-col items-center gap-3">
-                                <div class="w-12 h-12 rounded-xl bg-[var(--accent-blue)]/10 flex items-center justify-center text-[var(--accent-blue)]">
-                                    <i class="ph-bold ph-upload-simple text-2xl"></i>
-                                </div>
-                                <div class="text-center">
-                                    <p class="text-sm font-bold text-[var(--text-main)]">Trascina gli screenshot qui</p>
-                                    <p class="text-xs text-[var(--text-muted)] mt-1">o clicca per sfogliare</p>
-                                </div>
+                        <label class="pb-field-label">Esempi</label>
+                        <div id="drop-zone-setup" class="pb-drop">
+                            <input type="file" id="file-input-setup" accept="image/*" multiple style="display:none">
+                            <div id="drop-zone-content-setup">
+                                <p class="pb-drop-title">Trascina qui gli screenshot</p>
+                                <p class="pb-drop-hint">oppure tocca per sceglierli</p>
                             </div>
-                            <div id="gallery-preview-setup" class="flex flex-wrap justify-center gap-3 w-full ${ui.tempImages.length ? '' : 'hidden'}"></div>
+                            <div id="gallery-preview-setup" class="pb-preview" style="display:none"></div>
                         </div>
-                        <button id="clear-imgs-btn-setup" type="button" class="mt-3 w-full py-2.5 rounded-xl bg-rose-500/10 text-rose-500 text-xs font-bold hover:bg-rose-500 hover:text-white transition-all duration-200 ${ui.tempImages.length ? '' : 'hidden'}" onclick="event.stopPropagation(); ui.tempImages=[]; ui.renderTempImagesSetup();">Rimuovi Tutte le Immagini</button>
+                        <button id="clear-imgs-btn-setup" type="button" class="pb-btn pb-btn-danger" style="margin-top:10px;display:none" onclick="event.stopPropagation(); ui.tempImages=[]; ui.renderTempImagesSetup();">
+                            <i class="ph-bold ph-trash"></i>
+                            <span>Rimuovi tutti gli esempi</span>
+                        </button>
                     </div>
-
                 </div>
 
-                <!-- Footer -->
-                <div class="px-6 py-4 border-t border-[var(--glass-border)] flex items-center justify-between flex-shrink-0">
+                <footer class="pb-modal-foot">
                     ${id ? `
-                        <button onclick="ui.deleteSetup(${id})" class="text-rose-500 hover:text-rose-400 text-sm font-bold flex items-center gap-2 px-3 py-2.5 rounded-xl hover:bg-rose-500/10 transition-all duration-200">
-                            <i class="ph-bold ph-trash"></i> Elimina
-                        </button>
-                    ` : '<div></div>'}
-                    <div class="flex gap-3">
-                        <button onclick="ui.closeModals()" class="px-6 py-2.5 rounded-xl border border-[var(--glass-border)] text-sm font-bold text-[var(--text-muted)] bg-[var(--card-hover)] hover:bg-[var(--input-bg)] hover:text-[var(--text-main)] transition-all duration-200">
-                            Annulla
-                        </button>
-                        <button onclick="ui.saveSetup()" class="bg-[var(--accent-blue)] text-white preserve-white px-8 py-2.5 rounded-xl text-sm font-bold hover:opacity-90 transition-all">
-                            Salva Setup
-                        </button>
+                    <button onclick="ui.deleteSetup(${id})" class="pb-btn pb-btn-danger">
+                        <i class="ph-bold ph-trash"></i>
+                        <span>Elimina</span>
+                    </button>
+                    ` : '<span></span>'}
+                    <div style="display:flex;gap:10px">
+                        <button onclick="ui.closeModals()" class="pb-btn pb-btn-ghost">Annulla</button>
+                        <button onclick="ui.saveSetup()" class="pb-btn pb-btn-primary preserve-white">Salva setup</button>
                     </div>
-                </div>
+                </footer>
             </div>
         `;
-        
+
         ui.openModal('modal-setup');
         ui.renderTempImagesSetup();
-        
+
         // Setup Image Upload Handlers
         const dropZone = document.getElementById('drop-zone-setup');
         const fileInput = document.getElementById('file-input-setup');
         if (dropZone && fileInput) {
             dropZone.onclick = (e) => {
-                if (e.target.closest('#clear-imgs-btn-setup')) return;
+                if (e.target.closest('#clear-imgs-btn-setup') || e.target.closest('.pb-preview-remove')) return;
                 fileInput.click();
             };
-            dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('border-indigo-500', 'bg-indigo-500/5'); };
-            dropZone.ondragleave = () => { dropZone.classList.remove('border-indigo-500', 'bg-indigo-500/5'); };
-            dropZone.ondrop = (e) => { e.preventDefault(); dropZone.classList.remove('border-indigo-500', 'bg-indigo-500/5'); ui.handleFileSelect(e, 'setup'); };
+            dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('is-dragging'); };
+            dropZone.ondragleave = () => dropZone.classList.remove('is-dragging');
+            dropZone.ondrop = (e) => { e.preventDefault(); dropZone.classList.remove('is-dragging'); ui.handleFileSelect(e, 'setup'); };
             fileInput.onchange = (e) => ui.handleFileSelect(e, 'setup');
         }
+    },
+
+    ruleInputMarkup(value = '') {
+        return `
+            <div class="pb-rule-edit">
+                <input type="text" class="rule-input pb-input" value="${value}" placeholder="Condizione da verificare prima di entrare">
+                <button type="button" class="pb-rule-remove" title="Rimuovi regola" aria-label="Rimuovi regola" onclick="this.parentElement.remove()">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+            </div>
+        `;
     },
 
     addRuleInput() {
         const container = document.getElementById('rules-container');
         if (!container) return;
-        const div = document.createElement('div');
-        div.className = 'flex items-center gap-3 animate-fade-in';
-        div.innerHTML = `
-            <div class="w-6 h-6 rounded-md bg-[var(--accent-blue)]/10 text-[var(--accent-blue)] flex items-center justify-center shrink-0">
-                <i class="ph-bold ph-check text-xs"></i>
-            </div>
-            <input type="text" class="rule-input flex-1 bg-[var(--bg-card)] border border-[var(--glass-border)] rounded-lg p-2.5 outline-none text-sm text-[var(--text-main)] placeholder-[var(--text-muted)] focus:border-[var(--accent-blue)]/50 transition-all" placeholder="Condizione necessaria...">
-        `;
-        container.appendChild(div);
+
+        container.insertAdjacentHTML('beforeend', ui.ruleInputMarkup());
+        const added = container.lastElementChild?.querySelector('.rule-input');
+        if (added) added.focus();
     },
 
     renderTempImagesSetup() {
-        const c = document.getElementById('gallery-preview-setup'); 
-        const dz = document.getElementById('drop-zone-content-setup'); 
-        const btn = document.getElementById('clear-imgs-btn-setup'); 
-        if (!c || !dz || !btn) return;
-        c.innerHTML = ''; 
-        if (ui.tempImages.length) { 
-            c.classList.remove('hidden'); dz.classList.add('hidden'); btn.classList.remove('hidden'); 
-            ui.tempImages.forEach(s => { 
-                const d = document.createElement('div'); 
-                d.className = "w-20 h-20 bg-cover bg-center rounded-xl border border-[var(--glass-border)] shadow-sm cursor-pointer hover:opacity-80 hover:scale-105 transition-all duration-200"; 
-                d.style.backgroundImage = `url(${s})`; 
-                d.onclick = (e) => { e.stopPropagation(); ui.viewFullImage(s); }; 
-                c.appendChild(d); 
-            }); 
-        } else { 
-            c.classList.add('hidden'); dz.classList.remove('hidden'); btn.classList.add('hidden'); 
+        const gallery = document.getElementById('gallery-preview-setup');
+        const placeholder = document.getElementById('drop-zone-content-setup');
+        const clearBtn = document.getElementById('clear-imgs-btn-setup');
+        if (!gallery || !placeholder || !clearBtn) return;
+
+        gallery.innerHTML = '';
+
+        // Display gestito inline: le classi utility di Tailwind e le classi
+        // componente qui sotto hanno la stessa specificita', quindi l'ordine di
+        // caricamento deciderebbe chi vince.
+        if (!ui.tempImages.length) {
+            gallery.style.display = 'none';
+            placeholder.style.display = '';
+            clearBtn.style.display = 'none';
+            return;
         }
+
+        gallery.style.display = 'flex';
+        placeholder.style.display = 'none';
+        clearBtn.style.display = 'inline-flex';
+
+        ui.tempImages.forEach((src, index) => {
+            const item = document.createElement('div');
+            item.className = 'pb-preview-item';
+            item.style.backgroundImage = `url(${src})`;
+            item.onclick = (e) => { e.stopPropagation(); ui.viewFullImage(src); };
+
+            const remove = document.createElement('button');
+            remove.type = 'button';
+            remove.className = 'pb-preview-remove preserve-white';
+            remove.title = 'Rimuovi esempio';
+            remove.setAttribute('aria-label', 'Rimuovi esempio');
+            remove.innerHTML = '<i class="ph-bold ph-x"></i>';
+            remove.onclick = (e) => {
+                e.stopPropagation();
+                ui.tempImages.splice(index, 1);
+                ui.renderTempImagesSetup();
+            };
+
+            item.appendChild(remove);
+            gallery.appendChild(item);
+        });
     },
 
     saveSetup() {
