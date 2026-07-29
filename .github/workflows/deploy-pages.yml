@@ -23,6 +23,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
+
+      # GitHub Pages serve i file con Cache-Control max-age=600: senza questo,
+      # il browser puo' continuare a usare il vecchio ui.js/style_v1.css dopo un
+      # deploy, e - peggio - mescolare HTML nuovo con script vecchi. Appendendo
+      # il commit a ogni asset locale, ogni deploy produce URL nuovi.
+      - name: Versiona gli asset per evitare la cache del browser
+        run: |
+          SHA="${GITHUB_SHA::8}"
+          sed -i -E "s|(href=\"style_v1\.css)\"|\1?v=$SHA\"|g; s|(src=\"js/[A-Za-z0-9_-]+\.js)\"|\1?v=$SHA\"|g" App/index.html
+          echo "Asset versionati con $SHA:"
+          grep -E "style_v1\.css|src=\"js/" App/index.html
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: './App'
