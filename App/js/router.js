@@ -107,6 +107,7 @@ const router = {
 
     dashboard() { this.navigate('dashboard'); },
     journal() { this.navigate('journal'); },
+    analytics() { this.navigate('analytics'); },
     review() { this.navigate('review'); },
     todo() { this.navigate('todo'); },
     news() { this.navigate('news'); },
