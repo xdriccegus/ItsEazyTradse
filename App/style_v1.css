@@ -2985,12 +2985,8 @@ header .pointer-events-auto {
 .pb-stat {
     padding: 17px 20px;
     border-left: 1px solid var(--glass-border);
-    animation: pb-in .35s ease-out backwards;
 }
 .pb-stat:first-child { border-left: 0; }
-.pb-stat:nth-child(2) { animation-delay: .04s; }
-.pb-stat:nth-child(3) { animation-delay: .08s; }
-.pb-stat:nth-child(4) { animation-delay: .12s; }
 
 .pb-stat-value {
     display: block;
@@ -3024,21 +3020,10 @@ header .pointer-events-auto {
     border-radius: var(--pb-radius-lg);
     overflow: hidden;
     cursor: pointer;
-    transition: border-color .18s ease, transform .18s ease, box-shadow .18s ease;
-    animation: pb-in .35s ease-out backwards;
+    transition: border-color .16s ease;
 }
-.pb-card:nth-child(2) { animation-delay: .04s; }
-.pb-card:nth-child(3) { animation-delay: .08s; }
-.pb-card:nth-child(4) { animation-delay: .12s; }
-.pb-card:nth-child(5) { animation-delay: .16s; }
-.pb-card:nth-child(n+6) { animation-delay: .2s; }
 
-.pb-card:hover {
-    border-color: var(--pb-accent-soft);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-}
-.pb-card:active { transform: translateY(0); }
+.pb-card:hover { border-color: var(--pb-accent-soft); }
 
 .pb-card-media {
     position: relative;
@@ -3309,12 +3294,9 @@ header .pointer-events-auto {
     background-size: cover;
     background-position: center;
     cursor: pointer;
-    transition: border-color .16s ease, transform .16s ease;
+    transition: border-color .16s ease;
 }
-.pb-thumb:hover {
-    border-color: var(--pb-accent-soft);
-    transform: scale(1.015);
-}
+.pb-thumb:hover { border-color: var(--pb-accent-soft); }
 
 /* --- Form --- */
 .pb-form-row {
@@ -3371,7 +3353,6 @@ header .pointer-events-auto {
     display: flex;
     align-items: center;
     gap: 10px;
-    animation: pb-in .25s ease-out backwards;
 }
 .pb-rule-edit .pb-input { flex: 1; min-width: 0; }
 
@@ -3461,11 +3442,6 @@ header .pointer-events-auto {
     cursor: pointer;
 }
 
-@keyframes pb-in {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-
 @media (max-width: 640px) {
     .pb-page { gap: 22px; }
 
@@ -3487,13 +3463,6 @@ header .pointer-events-auto {
 
     .pb-modal-foot { flex-wrap: wrap; }
     .pb-modal-foot .pb-btn { flex: 1; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .pb-stat,
-    .pb-card,
-    .pb-rule-edit { animation: none; }
-    .pb-card:hover { transform: none; }
 }
 
 
